@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
+import { useEffect, useState, useRef } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -23,9 +24,44 @@ const formSchema = z.object({
   notes: z.string().optional(),
 })
 
+interface Patient {
+  id: string;
+  name: string;
+}
+
 export function NewJobForm() {
   const { toast } = useToast()
   const router = useRouter()
+  const [patients, setPatients] = useState<Patient[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    // Fetch patients from the EHR data
+    console.log('Fetching patients...')
+    fetch('/api/patients')
+      .then(res => {
+        console.log('API Response status:', res.status)
+        return res.json()
+      })
+      .then(data => {
+        console.log('Received patients data:', data)
+        setPatients(data)
+      })
+      .catch(error => {
+        console.error('Error fetching patients:', error)
+        toast({
+          title: "Error",
+          description: "Failed to load patient list",
+          variant: "destructive",
+        })
+      })
+  }, [toast])
+
+  // Add a debug effect to monitor patients state
+  useEffect(() => {
+    console.log('Current patients state:', patients)
+  }, [patients])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -35,14 +71,81 @@ export function NewJobForm() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
-    toast({
-      title: "Job created successfully",
-      description: `Created a new ${values.jobType} job for ${values.personName}`,
-    })
-    form.reset()
-    router.refresh()
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      setIsSubmitting(true)
+      
+      // Find the selected patient to get their ID
+      const selectedPatient = patients.find(p => p.name === values.personName)
+      if (!selectedPatient) {
+        throw new Error('Selected patient not found')
+      }
+      
+      // Format the data according to the required structure
+      const jobData = {
+        patientId: selectedPatient.id,
+        jobType: values.jobType,
+        additionalNotes: values.notes || ""
+      }
+      
+      console.log('Submitting job data:', jobData)
+      console.log('Selected patient:', selectedPatient)
+      console.log('Job type:', values.jobType)
+      
+      // Use the ngrok URL from environment variable
+      const ngrokUrl = process.env.NEXT_PUBLIC_NGROK_URL
+      if (!ngrokUrl) {
+        throw new Error('Ngrok URL not configured')
+      }
+      
+      console.log('Using ngrok URL:', ngrokUrl)
+      const apiUrl = `${ngrokUrl}/outbound-call`
+      console.log('Full API URL:', apiUrl)
+      
+      // Try to use our own API as a proxy to avoid CORS issues
+      const response = await fetch('/api/proxy-outbound-call', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          targetUrl: apiUrl,
+          data: jobData
+        }),
+      })
+
+      console.log('API response status:', response.status)
+      
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error('API error response:', errorText)
+        throw new Error(`Failed to create job: ${response.status} ${errorText}`)
+      }
+
+      const responseData = await response.json()
+      console.log('API success response:', responseData)
+
+      toast({
+        title: "Job created successfully",
+        description: `Created a new ${values.jobType} job for ${values.personName}`,
+      })
+      form.reset()
+      router.refresh()
+      
+      // Close the modal after successful submission
+      if (closeButtonRef.current) {
+        closeButtonRef.current.click()
+      }
+    } catch (error) {
+      console.error('Error creating job:', error)
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to create job. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -53,10 +156,21 @@ export function NewJobForm() {
           name="personName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Person's Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter patient or staff name" {...field} />
-              </FormControl>
+              <FormLabel>Patient Name</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a patient" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {patients.map((patient) => (
+                    <SelectItem key={patient.id} value={patient.name}>
+                      {patient.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -75,9 +189,9 @@ export function NewJobForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="check-up">Patient Check-up</SelectItem>
+                  <SelectItem value="checkup">Patient Check-up</SelectItem>
                   <SelectItem value="appointment">Schedule Appointment</SelectItem>
-                  <SelectItem value="follow-up">Patient Follow-up</SelectItem>
+                  <SelectItem value="followup">Patient Follow-up</SelectItem>
                   <SelectItem value="documentation">Documentation</SelectItem>
                   <SelectItem value="paperwork">Paperwork Automation</SelectItem>
                   <SelectItem value="call">Outgoing Call</SelectItem>
@@ -109,9 +223,11 @@ export function NewJobForm() {
 
         <div className="flex justify-end gap-4">
           <DialogClose asChild>
-            <Button type="button" variant="outline">Cancel</Button>
+            <Button type="button" variant="outline" ref={closeButtonRef}>Cancel</Button>
           </DialogClose>
-          <Button type="submit">Submit Job</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Creating..." : "Submit Job"}
+          </Button>
         </div>
       </form>
     </Form>

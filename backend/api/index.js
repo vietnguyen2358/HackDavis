@@ -5,9 +5,10 @@ import fastifyFormBody from "@fastify/formbody";
 import fastifyWs from "@fastify/websocket";
 import { registerInboundRoutes } from './inbound-calls.js';
 import { registerOutboundRoutes } from './outbound-calls.js';
+import path from 'path';
 
-// Load environment variables from .env file
-dotenv.config({ path: path.resolve("../../.env") });
+// Load environment variables from .env file in HackDavis root directory
+dotenv.config({ path: path.join(process.cwd(), '..', '..', '.env') });
 
 // Initialize Fastify server
 const fastify = Fastify({
