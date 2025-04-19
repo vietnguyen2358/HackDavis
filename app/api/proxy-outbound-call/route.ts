@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     
     if (!targetUrl) {
       return NextResponse.json(
-        { error: 'Target URL is required' },
+        { success: false, error: 'Target URL is required' },
         { status: 400 }
       )
     }
@@ -32,8 +32,8 @@ export async function POST(request: Request) {
         console.error('API responded with an error:', response.status, errorText)
         
         return NextResponse.json(
-          { error: `API responded with status ${response.status}: ${errorText}` },
-          { status: response.status }
+          { success: false, error: `Failed to initiate call: ${errorText}` },
+          { status: 500 }
         )
       }
       
@@ -46,22 +46,22 @@ export async function POST(request: Request) {
       } else {
         // If not JSON, get the text response
         const textResponse = await response.text()
-        responseData = { message: textResponse }
+        responseData = { success: true, message: textResponse }
       }
       
       console.log('Proxy response:', responseData)
-      return NextResponse.json(responseData)
+      return NextResponse.json({ success: true, ...responseData })
     } catch (fetchError: any) {
       console.error('Fetch error:', fetchError)
       return NextResponse.json(
-        { error: `Failed to connect to ${targetUrl}: ${fetchError?.message || 'Unknown error'}` },
+        { success: false, error: `Failed to connect to service: ${fetchError?.message || 'Unknown error'}` },
         { status: 502 }
       )
     }
   } catch (error: any) {
     console.error('Error in proxy:', error)
     return NextResponse.json(
-      { error: `Failed to proxy request: ${error?.message || 'Unknown error'}` },
+      { success: false, error: `Failed to process request: ${error?.message || 'Unknown error'}` },
       { status: 500 }
     )
   }
