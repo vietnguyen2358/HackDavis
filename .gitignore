@@ -21,6 +21,9 @@ yarn-error.log*
 .nuxt/
 .svelte-kit/
 .turbo/
+package.json
+package-lock.json
+
 
 
 # VSCode
