@@ -1,11 +1,11 @@
 import { PageHeader } from "@/components/page-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { TranscriptionDemo } from "@/components/transcription-demo"
 import { DocumentationList } from "@/components/documentation-list"
 import { Button } from "@/components/ui/button"
 import { PlusCircle } from "lucide-react"
 import Link from "next/link"
+import { LiveTranscription } from "@/components/live-transcription"
 
 export default function DocumentationPage() {
   return (
@@ -25,11 +25,11 @@ export default function DocumentationPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Live Transcription Demo</CardTitle>
-          <CardDescription>See how our AI transcribes and generates notes in real-time</CardDescription>
+          <CardTitle>Live Transcription & Notes</CardTitle>
+          <CardDescription>Record and transcribe patient consultations in real-time</CardDescription>
         </CardHeader>
         <CardContent>
-          <TranscriptionDemo />
+          <LiveTranscription />
         </CardContent>
       </Card>
 
