@@ -8,68 +8,102 @@
   }
 
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Base Colors - Light Mode */
+    --background: 210 20% 98%;
+    --foreground: 224 71% 4%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 224 71% 4%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
+    --popover-foreground: 224 71% 4%;
+    
+    /* Primary Brand Color - More vibrant blue */
+    --primary: 222 89% 55%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
+    
+    /* Secondary Colors */
+    --secondary: 214 32% 91%;
+    --secondary-foreground: 222 47% 11%;
+    
+    /* Muted UI Elements */
+    --muted: 214 32% 91%;
+    --muted-foreground: 215 25% 27%;
+    
+    /* Accent Color - Slightly more saturated */
+    --accent: 215 79% 92%;
+    --accent-foreground: 222 47% 11%;
+    
+    /* Status Colors */
+    --success: 142 76% 36%;
+    --success-foreground: 144 70% 96%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 48 96% 96%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    
+    /* UI Element Colors */
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 222 89% 55%;
     --radius: 0.5rem;
 
     /* Sidebar variables */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 210 20% 98%;
+    --sidebar-foreground: 215 25% 27%;
+    --sidebar-primary: 224 71% 4%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 214 32% 91%;
+    --sidebar-accent-foreground: 224 71% 4%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 222 89% 55%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
+    /* Base Colors - Dark Mode */
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+    --popover: 224 71% 4%;
+    --popover-foreground: 213 31% 91%;
+    
+    /* Primary Brand Color */
+    --primary: 213 94% 68%;
+    --primary-foreground: 222 47% 11%;
+    
+    /* Secondary Colors */
+    --secondary: 222 47% 11%;
+    --secondary-foreground: 213 31% 91%;
+    
+    /* Muted UI Elements */
+    --muted: 222 47% 11%;
+    --muted-foreground: 215 20% 65%;
+    
+    /* Accent Color */
+    --accent: 216 34% 17%;
+    --accent-foreground: 213 31% 91%;
+    
+    /* Status Colors */
+    --success: 142 70% 49%;
+    --success-foreground: 144 70% 10%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 48 96% 10%;
+    --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    
+    /* UI Element Colors */
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+    --ring: 213 94% 68%;
 
     /* Sidebar variables */
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 0 0% 98%;
-    --sidebar-primary-foreground: 240 5.9% 10%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 225 29% 7%;
+    --sidebar-foreground: 213 31% 91%;
+    --sidebar-primary: 213 31% 91%;
+    --sidebar-primary-foreground: 225 29% 7%;
+    --sidebar-accent: 216 34% 17%;
+    --sidebar-accent-foreground: 213 31% 91%;
+    --sidebar-border: 216 34% 17%;
+    --sidebar-ring: 213 94% 68%;
   }
 }
 
@@ -80,5 +114,83 @@
   body {
     @apply bg-background text-foreground min-h-screen font-sans antialiased;
     font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+}
+
+/* Add utility classes for gradients */
+@layer utilities {
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%);
+  }
+  
+  .gradient-success {
+    background: linear-gradient(135deg, hsl(var(--success)) 0%, hsl(var(--success) / 0.8) 100%);
+  }
+  
+  .gradient-warning {
+    background: linear-gradient(135deg, hsl(var(--warning)) 0%, hsl(var(--warning) / 0.8) 100%);
+  }
+  
+  .gradient-destructive {
+    background: linear-gradient(135deg, hsl(var(--destructive)) 0%, hsl(var(--destructive) / 0.8) 100%);
+  }
+  
+  .card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+}
+
+/* Add typography utilities */
+@layer components {
+  .h1 {
+    @apply text-3xl font-bold tracking-tight md:text-4xl scroll-m-20;
+  }
+  
+  .h2 {
+    @apply text-2xl font-semibold tracking-tight md:text-3xl scroll-m-20;
+  }
+  
+  .h3 {
+    @apply text-xl font-semibold tracking-tight md:text-2xl scroll-m-20;
+  }
+  
+  .h4 {
+    @apply text-lg font-semibold tracking-tight md:text-xl scroll-m-20;
+  }
+  
+  .lead {
+    @apply text-xl text-muted-foreground;
+  }
+  
+  .large {
+    @apply text-lg font-medium;
+  }
+  
+  .small {
+    @apply text-sm font-medium leading-none;
+  }
+  
+  .subtle {
+    @apply text-sm text-muted-foreground;
+  }
+}
+
+/* Improve readability with better line heights and spacing */
+@layer base {
+  p {
+    @apply leading-7;
+  }
+  
+  blockquote {
+    @apply mt-6 border-l-2 pl-6 italic;
+  }
+  
+  code {
+    @apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm;
   }
 }

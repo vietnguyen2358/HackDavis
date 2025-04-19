@@ -1,51 +1,66 @@
+"use client"
+
+import { Suspense, lazy } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardStats } from "@/components/dashboard-stats"
-import { RecentActivities } from "@/components/recent-activities"
-import { UpcomingAppointments } from "@/components/upcoming-appointments"
-import { AutomationMetrics } from "@/components/automation-metrics"
 import { PageHeader } from "@/components/page-header"
 import { NewJobModal } from "@/components/new-job-modal"
 
+// Lazy load components that aren't needed immediately
+const RecentActivities = lazy(() => import("@/components/recent-activities").then(mod => ({ default: mod.RecentActivities })))
+const UpcomingAppointments = lazy(() => import("@/components/upcoming-appointments").then(mod => ({ default: mod.UpcomingAppointments })))
+const AutomationMetrics = lazy(() => import("@/components/automation-metrics").then(mod => ({ default: mod.AutomationMetrics })))
+
 export default function Dashboard() {
   return (
-    <div className="flex flex-col p-6 space-y-6 w-full max-w-full">
-      <PageHeader 
-        title="Dashboard" 
-        description="Overview of your clinic's performance and AI automation metrics"
-        actions={<NewJobModal />}
-      />
+    <div className="flex flex-col p-4 md:p-6 lg:p-8 space-y-8 w-full max-w-full">
+      <div className="max-w-screen-2xl mx-auto w-full">
+        <PageHeader 
+          title="Dashboard" 
+          description="Overview of your clinic's performance and AI automation metrics"
+          actions={<NewJobModal />}
+        />
+      </div>
 
-      <DashboardStats />
+      <div className="max-w-screen-2xl mx-auto w-full">
+        <DashboardStats />
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-        <Card className="w-full shadow-sm">
-          <CardHeader>
-            <CardTitle>Automation Metrics</CardTitle>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 max-w-screen-2xl mx-auto w-full">
+        <Card className="w-full shadow-sm lg:col-span-2 card-hover">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xl font-semibold">Automation Metrics</CardTitle>
             <CardDescription>Time saved through AI automation</CardDescription>
           </CardHeader>
           <CardContent>
-            <AutomationMetrics />
+            <Suspense fallback={<div className="h-64 flex items-center justify-center">Loading metrics...</div>}>
+              <AutomationMetrics />
+            </Suspense>
           </CardContent>
         </Card>
 
-        <Card className="w-full shadow-sm">
-          <CardHeader>
-            <CardTitle>Upcoming Appointments</CardTitle>
+        <Card className="w-full shadow-sm card-hover">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xl font-semibold">Upcoming Appointments</CardTitle>
             <CardDescription>Next 24 hours</CardDescription>
           </CardHeader>
           <CardContent>
-            <UpcomingAppointments />
+            <Suspense fallback={<div className="h-64 flex items-center justify-center">Loading appointments...</div>}>
+              <UpcomingAppointments />
+            </Suspense>
           </CardContent>
         </Card>
       </div>
 
-      <Card className="w-full shadow-sm">
-        <CardHeader>
-          <CardTitle>Recent Activities</CardTitle>
+      <Card className="w-full shadow-sm max-w-screen-2xl mx-auto card-hover">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-xl font-semibold">Recent Activities</CardTitle>
           <CardDescription>Latest automated workflows and actions</CardDescription>
         </CardHeader>
         <CardContent>
-          <RecentActivities />
+          <Suspense fallback={<div className="h-64 flex items-center justify-center">Loading recent activities...</div>}>
+            <RecentActivities />
+          </Suspense>
         </CardContent>
       </Card>
     </div>
