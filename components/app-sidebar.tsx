@@ -66,11 +66,6 @@ export function AppSidebar() {
       icon: Users,
       path: "/patients",
     },
-    {
-      title: "Call Center",
-      icon: Phone,
-      path: "/calls",
-    },
   ]
 
   return (

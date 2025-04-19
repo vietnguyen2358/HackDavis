@@ -5,10 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { DashboardStats } from "@/components/dashboard-stats"
 import { PageHeader } from "@/components/page-header"
 import { NewJobModal } from "@/components/new-job-modal"
+import { UpcomingAIJobs } from "@/components/upcoming-ai-jobs"
 
 // Lazy load components that aren't needed immediately
 const RecentActivities = lazy(() => import("@/components/recent-activities").then(mod => ({ default: mod.RecentActivities })))
-const UpcomingAppointments = lazy(() => import("@/components/upcoming-appointments").then(mod => ({ default: mod.UpcomingAppointments })))
 const AutomationMetrics = lazy(() => import("@/components/automation-metrics").then(mod => ({ default: mod.AutomationMetrics })))
 
 export default function Dashboard() {
@@ -41,12 +41,12 @@ export default function Dashboard() {
 
         <Card className="w-full shadow-sm card-hover">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xl font-semibold">Upcoming Appointments</CardTitle>
+            <CardTitle className="text-xl font-semibold">Upcoming AI Jobs</CardTitle>
             <CardDescription>Next 24 hours</CardDescription>
           </CardHeader>
           <CardContent>
-            <Suspense fallback={<div className="h-64 flex items-center justify-center">Loading appointments...</div>}>
-              <UpcomingAppointments />
+            <Suspense fallback={<div className="h-64 flex items-center justify-center">Loading upcoming AI jobs...</div>}>
+              <UpcomingAIJobs />
             </Suspense>
           </CardContent>
         </Card>

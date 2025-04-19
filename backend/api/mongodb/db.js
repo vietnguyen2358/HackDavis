@@ -36,6 +36,41 @@ export async function getSystemPrompt() {
   return db.collection("systemPrompt").findOne({});
 }
 
+export async function updatePatient(id, updates) {
+  const db = await connectToDatabase();
+  
+  try {
+    console.log(`Updating patient with id: ${id}`);
+    console.log('Clean updates:', updates);
+    
+    // First check if the patient exists
+    const existingPatient = await db.collection("patients").findOne({ id });
+    if (!existingPatient) {
+      console.error(`Patient with id ${id} not found`);
+      return null;
+    }
+    
+    // Perform the update
+    const result = await db.collection("patients").updateOne(
+      { id },
+      { $set: updates }
+    );
+    
+    if (result.matchedCount === 0) {
+      console.error('No document was updated');
+      return null;
+    }
+    
+    // Fetch the updated document
+    const updatedPatient = await db.collection("patients").findOne({ id });
+    console.log('Update successful:', updatedPatient);
+    return updatedPatient;
+  } catch (error) {
+    console.error('Error in updatePatient:', error);
+    throw error;
+  }
+}
+
 export async function closeConnection() {
   if (client) {
     await client.close();
