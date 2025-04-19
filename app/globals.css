@@ -178,6 +178,16 @@
   .subtle {
     @apply text-sm text-muted-foreground;
   }
+  
+  /* Add mobile navigation spacing */
+  .mobile-nav-spacing {
+    @apply pt-16 md:pt-0;
+  }
+  
+  /* Add gradient utility */
+  .gradient-primary {
+    @apply bg-gradient-to-r from-primary to-blue-500;
+  }
 }
 
 /* Improve readability with better line heights and spacing */
