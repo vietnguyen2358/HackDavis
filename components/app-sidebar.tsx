@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/sidebar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { NewJobModal } from "@/components/new-job-modal"
 
 export function AppSidebar() {
   const pathname = usePathname()
@@ -73,7 +74,7 @@ export function AppSidebar() {
   ]
 
   return (
-    <Sidebar>
+    <Sidebar variant="floating" collapsible="none" className="border-r shadow-sm">
       <SidebarHeader className="flex flex-col items-start px-4 py-4">
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
@@ -82,21 +83,16 @@ export function AppSidebar() {
           <span className="text-xl font-bold">HealthAssist AI</span>
         </div>
         <div className="mt-4 w-full">
-          <Button asChild className="w-full justify-start gap-2">
-            <Link href="/new-job">
-              <PlusCircle className="h-4 w-4" />
-              New Job
-            </Link>
-          </Button>
+          <NewJobModal />
         </div>
       </SidebarHeader>
-      <SidebarSeparator />
-      <SidebarContent>
+      <SidebarSeparator className="my-2" />
+      <SidebarContent className="px-2">
         <SidebarMenu>
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.path}>
               <SidebarMenuButton asChild isActive={isActive(item.path)}>
-                <Link href={item.path}>
+                <Link href={item.path} className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-sidebar-accent">
                   <item.icon className="h-5 w-5" />
                   <span>{item.title}</span>
                 </Link>
@@ -105,9 +101,10 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
+      <SidebarSeparator className="my-2" />
       <SidebarFooter className="p-4">
         <div className="flex items-center gap-2">
-          <Avatar>
+          <Avatar className="h-9 w-9">
             <AvatarImage src="/placeholder.svg?height=40&width=40" alt="User" />
             <AvatarFallback>DR</AvatarFallback>
           </Avatar>

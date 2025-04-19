@@ -4,12 +4,14 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useToast } from "@/hooks/use-toast"
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { DialogClose } from "@/components/ui/dialog"
 
 const formSchema = z.object({
   personName: z.string().min(2, {
@@ -23,6 +25,7 @@ const formSchema = z.object({
 
 export function NewJobForm() {
   const { toast } = useToast()
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,6 +42,7 @@ export function NewJobForm() {
       description: `Created a new ${values.jobType} job for ${values.personName}`,
     })
     form.reset()
+    router.refresh()
   }
 
   return (
@@ -103,9 +107,12 @@ export function NewJobForm() {
           )}
         />
 
-        <Button type="submit" className="w-full">
-          Submit Job
-        </Button>
+        <div className="flex justify-end gap-4">
+          <DialogClose asChild>
+            <Button type="button" variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button type="submit">Submit Job</Button>
+        </div>
       </form>
     </Form>
   )
