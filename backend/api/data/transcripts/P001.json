@@ -1,0 +1,362 @@
+[
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "Hello! This is MediConnect AI calling from HealthAssist. I'm reaching out regarding your upcoming healthcare appointment. Is this a good time to talk for a moment?"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:35:29.578Z"
+  },
+  {
+    "type": "user",
+    "raw": {
+      "user_transcription_event": {
+        "user_transcript": "What time is it? What time is it? Okay."
+      },
+      "type": "user_transcript"
+    },
+    "timestamp": "2025-04-19T20:35:50.033Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "..."
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:35:50.077Z"
+  },
+  {
+    "type": "user",
+    "raw": {
+      "user_transcription_event": {
+        "user_transcript": "What time is it?"
+      },
+      "type": "user_transcript"
+    },
+    "timestamp": "2025-04-19T20:35:52.098Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "I am sorry, I do not have access to the current time. Is there anything else I can help you with today?\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:35:52.163Z"
+  },
+  {
+    "type": "user",
+    "raw": {
+      "user_transcription_event": {
+        "user_transcript": "nothing ever happens. I don't know. I didn't even ask how I saw it. Okay, so let me know. What is my name? Oh, brother! Teddy is like nothing ever happens. I'm like, what's this right now? I don't even know what's going on with me right now. I'm not sure. I don't even know what's going on with me right now. What is my name?"
+      },
+      "type": "user_transcript"
+    },
+    "timestamp": "2025-04-19T20:36:11.069Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "I am MediConnect AI from HealthAssist. Can you please confirm your name and date of birth?\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:36:11.199Z"
+  },
+  {
+    "type": "user",
+    "raw": {
+      "user_transcription_event": {
+        "user_transcript": "..."
+      },
+      "type": "user_transcript"
+    },
+    "timestamp": "2025-04-19T20:36:22.784Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "Are you still there?\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:36:22.785Z"
+  },
+  {
+    "type": "user",
+    "raw": {
+      "user_transcription_event": {
+        "user_transcript": ". Yes, can you hear me?"
+      },
+      "type": "user_transcript"
+    },
+    "timestamp": "2025-04-19T20:36:26.274Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "Yes, I can hear you. Can you please confirm your name and date of birth?\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:36:26.404Z"
+  },
+  {
+    "type": "user",
+    "raw": {
+      "user_transcription_event": {
+        "user_transcript": "Yes, my name is John Smith. Is this just a deafening and a loud voice ? Yes, my name is John Smith."
+      },
+      "type": "user_transcript"
+    },
+    "timestamp": "2025-04-19T20:36:38.491Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "Thank you, John Smith. And can you please confirm your date of birth?\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:36:38.573Z"
+  },
+  {
+    "type": "user",
+    "raw": {
+      "user_transcription_event": {
+        "user_transcript": "I do not understand anything at all!"
+      },
+      "type": "user_transcript"
+    },
+    "timestamp": "2025-04-19T20:36:44.881Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "I understand. I am here to help with your healthcare needs. Can you please tell me what you need assistance with today?\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:36:45.061Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "Okay, is there anything else I can help you with today?\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:36:49.257Z"
+  },
+  {
+    "type": "user",
+    "raw": {
+      "user_transcription_event": {
+        "user_transcript": "Hi, Gerald. Hey, Ian. I just want to change this. We'll test it on the longevity."
+      },
+      "type": "user_transcript"
+    },
+    "timestamp": "2025-04-19T20:36:58.363Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "I am sorry, I did not understand you.\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:36:58.424Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "Hello! This is MediConnect AI calling from HealthAssist. I'm reaching out regarding your upcoming healthcare appointment. Is this a good time to talk for a moment?"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:37:57.814Z"
+  },
+  {
+    "type": "user",
+    "raw": {
+      "user_transcription_event": {
+        "user_transcript": "Can you hear me?"
+      },
+      "type": "user_transcript"
+    },
+    "timestamp": "2025-04-19T20:38:02.332Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "Yes, I can hear you. How can I help you today?\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:38:02.404Z"
+  },
+  {
+    "type": "user",
+    "raw": {
+      "user_transcription_event": {
+        "user_transcript": "What time is it?"
+      },
+      "type": "user_transcript"
+    },
+    "timestamp": "2025-04-19T20:38:09.838Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "I am sorry, I do not have access to the current time. Is there anything else I can help you with?\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:38:10.025Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "Okay, I'll be here.\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:38:11.171Z"
+  },
+  {
+    "type": "user",
+    "raw": {
+      "user_transcription_event": {
+        "user_transcript": "What time is it?"
+      },
+      "type": "user_transcript"
+    },
+    "timestamp": "2025-04-19T20:38:19.085Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "I am sorry, I do not have access to the current time. Is there anything else I can help you with?\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:38:19.229Z"
+  },
+  {
+    "type": "user",
+    "raw": {
+      "user_transcription_event": {
+        "user_transcript": "Can you help me?"
+      },
+      "type": "user_transcript"
+    },
+    "timestamp": "2025-04-19T20:38:27.638Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "Yes, I can help you. How can I assist you today?\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:38:27.717Z"
+  },
+  {
+    "type": "user",
+    "raw": {
+      "user_transcription_event": {
+        "user_transcript": "That's cool. Can I ask you a real quick one?"
+      },
+      "type": "user_transcript"
+    },
+    "timestamp": "2025-04-19T20:38:33.628Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "Yes, of course. What's your question?\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:38:33.639Z"
+  },
+  {
+    "type": "user",
+    "raw": {
+      "user_transcription_event": {
+        "user_transcript": "No."
+      },
+      "type": "user_transcript"
+    },
+    "timestamp": "2025-04-19T20:38:36.786Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "Okay. Is there anything else I can help you with?\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:38:36.938Z"
+  },
+  {
+    "type": "user",
+    "raw": {
+      "user_transcription_event": {
+        "user_transcript": "Well, can I schedule an appointment?"
+      },
+      "type": "user_transcript"
+    },
+    "timestamp": "2025-04-19T20:38:39.750Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "I can help with that. However, I am unable to schedule appointments. I can help with confirming upcoming appointments and sending reminders. I can also help you reschedule if needed.\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:38:39.939Z"
+  },
+  {
+    "type": "user",
+    "raw": {
+      "user_transcription_event": {
+        "user_transcript": "What is my current appointment? What's my next upcoming appointment?"
+      },
+      "type": "user_transcript"
+    },
+    "timestamp": "2025-04-19T20:38:53.067Z"
+  },
+  {
+    "type": "ai",
+    "raw": {
+      "agent_response_event": {
+        "agent_response": "I can certainly help you with that. However, I am unable to access your appointment information at this time.\n"
+      },
+      "type": "agent_response"
+    },
+    "timestamp": "2025-04-19T20:38:53.237Z"
+  }
+]
