@@ -17,9 +17,10 @@
     "@fastify/websocket": "^11.0.1",
     "@types/node": "^18.0.6",
     "axios": "^1.7.9",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.5.0",
     "elevenlabs": "^0.18.1",
     "fastify": "^5.1.0",
+    "mongodb": "^6.15.0",
     "node-fetch": "^3.3.2",
     "twilio": "^5.3.7",
     "ws": "^8.18.0"

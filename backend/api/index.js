@@ -1,5 +1,6 @@
 import Fastify from "fastify";
 import dotenv from "dotenv";
+import path from "path";
 import fastifyFormBody from "@fastify/formbody";
 import fastifyWs from "@fastify/websocket";
 import { registerInboundRoutes } from './inbound-calls.js';
