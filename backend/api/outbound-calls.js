@@ -2,12 +2,16 @@ import WebSocket from "ws";
 import Twilio from "twilio";
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Load EHR data
-const ehrData = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'data', 'ehr.json'), 'utf8'));
+const ehrData = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'ehr.json'), 'utf8'));
 
 // Ensure transcripts directory exists
-const transcriptsDir = path.join(process.cwd(), 'data', 'transcripts');
+const transcriptsDir = path.join(__dirname, 'data', 'transcripts');
 if (!fs.existsSync(transcriptsDir)) {
   fs.mkdirSync(transcriptsDir, { recursive: true });
 }
