@@ -57,7 +57,7 @@ export function registerOutboundRoutes(fastify) {
 
   // Route to initiate outbound calls
   fastify.post("/outbound-call", async (request, reply) => {
-    const { patientId, jobType } = request.body;
+    const { patientId, jobType, additionalNotes } = request.body;
 
     if (!patientId) {
       return reply.code(400).send({ error: "Patient ID is required" });
@@ -110,6 +110,11 @@ export function registerOutboundRoutes(fastify) {
           break;
         default:
           customPrompt += `Please assist the patient with their healthcare needs.\n`;
+      }
+
+      // Add additional notes if provided
+      if (additionalNotes) {
+        customPrompt += `\nAdditional Notes:\n${additionalNotes}\n\n`;
       }
 
       // Add patient preferences
