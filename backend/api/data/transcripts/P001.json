@@ -2,7 +2,7 @@
   {
     "type": "system",
     "content": "Call started",
-    "timestamp": "2025-04-19T22:24:27.999Z"
+    "timestamp": "2025-04-19T22:31:17.085Z"
   },
   {
     "type": "ai",
@@ -12,17 +12,17 @@
       },
       "type": "agent_response"
     },
-    "timestamp": "2025-04-19T22:24:28.891Z"
+    "timestamp": "2025-04-19T22:31:18.153Z"
   },
   {
     "type": "user",
     "raw": {
       "user_transcription_event": {
-        "user_transcript": "Can you hear me?"
+        "user_transcript": "Can you hear me? Testing 1, 2, 3."
       },
       "type": "user_transcript"
     },
-    "timestamp": "2025-04-19T22:24:35.494Z"
+    "timestamp": "2025-04-19T22:31:26.269Z"
   },
   {
     "type": "ai",
@@ -32,6 +32,6 @@
       },
       "type": "agent_response"
     },
-    "timestamp": "2025-04-19T22:24:35.545Z"
+    "timestamp": "2025-04-19T22:31:26.334Z"
   }
 ]

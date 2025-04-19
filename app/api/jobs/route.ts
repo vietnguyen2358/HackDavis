@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server'
-import ehrData from '../../../backend/api/data/ehr.json'
+import { getPatientByName } from '../../../backend/api/mongodb/db'
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
     const { personName, jobType, notes } = body
 
-    // Find the patient in the EHR data
-    const patient = ehrData.patients.find(p => p.name === personName)
+    // Find the patient in MongoDB
+    const patient = await getPatientByName(personName)
     if (!patient) {
       return NextResponse.json(
         { error: 'Patient not found' },

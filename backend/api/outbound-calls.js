@@ -3,12 +3,10 @@ import Twilio from "twilio";
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getPatientById, getSystemPrompt } from './mongodb/db.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Load EHR data
-const ehrData = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'ehr.json'), 'utf8'));
 
 // Ensure transcripts directory exists
 const transcriptsDir = path.join(__dirname, 'data', 'transcripts');
@@ -114,14 +112,14 @@ export function registerOutboundRoutes(fastify) {
     }
 
     try {
-      // Find patient in EHR
-      const patient = ehrData.patients.find(p => p.id === patientId);
+      // Find patient in MongoDB
+      const patient = await getPatientById(patientId);
       if (!patient) {
         return reply.code(404).send({ error: "Patient not found" });
       }
 
-      // Get the system prompt
-      const systemPrompt = ehrData.systemPrompt;
+      // Get the system prompt from MongoDB
+      const systemPrompt = await getSystemPrompt();
 
       // Create a custom prompt based on the job type and patient info
       let customPrompt = `${systemPrompt.role}\n\n`;
@@ -192,6 +190,7 @@ export function registerOutboundRoutes(fastify) {
         }
       });
     } catch (error) {
+      console.error("Error initiating call:", error);
       reply.code(500).send({ 
         success: false, 
         error: "Failed to initiate call" 
