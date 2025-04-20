@@ -4,6 +4,7 @@ import { CalendarView } from "@/components/calendar-view"
 import { NewUpcomingAppointmentModal } from "@/components/new-upcoming-appointment-modal";
 import Link from "next/link"
 import { CalendarStats } from "@/components/calendar-stats"
+import { UpcomingAppointments } from "@/components/UpcomingAppointments"
 
 export default function CalendarPage() {
   return (
@@ -17,6 +18,8 @@ export default function CalendarPage() {
       />
 
       <CalendarStats />
+
+      
 
       <Card>
         <CardHeader>

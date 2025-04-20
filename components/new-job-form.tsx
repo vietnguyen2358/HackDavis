@@ -359,14 +359,12 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
         />
 
         <div className="flex justify-end gap-4">
-          <Dialog>
-            <DialogClose asChild>
-              <Button type="button" variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Creating..." : "Submit Job"}
-            </Button>
-          </Dialog>
+          <DialogClose asChild>
+            <Button type="button" variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Creating..." : "Submit Job"}
+          </Button>
         </div>
       </form>
     </Form>
