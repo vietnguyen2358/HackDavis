@@ -429,7 +429,7 @@ export function LiveTranscription() {
           value={title} 
           onChange={(e) => setTitle(e.target.value)} 
           placeholder="Enter a title for this transcription"
-          className="mt-1"
+          className="mt-1 bg-background-muted"
         />
       </div>
       
@@ -505,7 +505,7 @@ export function LiveTranscription() {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Clinical notes will appear here..."
-                className="min-h-[250px] resize-none"
+                className="min-h-[250px] resize-none bg-background-muted"
               />
             </ScrollArea>
           </CardContent>
