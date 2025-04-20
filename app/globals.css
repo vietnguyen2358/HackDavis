@@ -9,101 +9,101 @@
 
   :root {
     /* Base Colors - Light Mode */
-    --background: 210 20% 98%;
-    --foreground: 224 71% 4%;
+    --background: 210 40% 98%;
+    --foreground: 215 30% 12%;    /* #18283E - Dark Navy for good contrast */
     --card: 0 0% 100%;
-    --card-foreground: 224 71% 4%;
+    --card-foreground: 215 30% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 224 71% 4%;
+    --popover-foreground: 215 30% 12%;
     
-    /* Primary Brand Color - More vibrant blue */
-    --primary: 222 89% 55%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary Brand Color - WCAG AA Compliant */
+    --primary: 164 80% 24%;       /* #0C6E4F - Deep Teal */
+    --primary-foreground: 0 0% 100%;
     
     /* Secondary Colors */
     --secondary: 214 32% 91%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary-foreground: 215 30% 12%;
     
     /* Muted UI Elements */
     --muted: 214 32% 91%;
     --muted-foreground: 215 25% 27%;
     
-    /* Accent Color - Slightly more saturated */
-    --accent: 215 79% 92%;
-    --accent-foreground: 222 47% 11%;
+    /* Accent Color - Accessible Blue */
+    --accent: 217 90% 58%;        /* #2D7FF9 - Accessible Blue */
+    --accent-foreground: 210 40% 98%;
     
-    /* Status Colors */
-    --success: 142 76% 36%;
+    /* Status Colors - WCAG Compliant */
+    --success: 162 81% 26%;       /* #087F5B - Green */
     --success-foreground: 144 70% 96%;
-    --warning: 38 92% 50%;
+    --warning: 43 90% 36%;        /* #B45309 - Amber */
     --warning-foreground: 48 96% 96%;
-    --destructive: 0 84% 60%;
+    --destructive: 0 74% 42%;     /* #B91C1C - Red */
     --destructive-foreground: 210 40% 98%;
     
     /* UI Element Colors */
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 222 89% 55%;
+    --ring: 164 80% 24%;          /* Match primary */
     --radius: 0.5rem;
 
     /* Sidebar variables */
-    --sidebar-background: 210 20% 98%;
-    --sidebar-foreground: 215 25% 27%;
-    --sidebar-primary: 224 71% 4%;
+    --sidebar-background: 210 40% 98%;
+    --sidebar-foreground: 215 30% 12%;
+    --sidebar-primary: 164 80% 24%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 214 32% 91%;
-    --sidebar-accent-foreground: 224 71% 4%;
+    --sidebar-accent-foreground: 215 30% 12%;
     --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 222 89% 55%;
+    --sidebar-ring: 164 80% 24%;
   }
 
   .dark {
     /* Base Colors - Dark Mode */
-    --background: 224 71% 4%;
-    --foreground: 213 31% 91%;
-    --card: 224 71% 4%;
-    --card-foreground: 213 31% 91%;
-    --popover: 224 71% 4%;
-    --popover-foreground: 213 31% 91%;
+    --background: 217 33% 17%;   /* Darkened to ensure text contrast */
+    --foreground: 210 40% 98%;
+    --card: 217 33% 17%;
+    --card-foreground: 210 40% 98%;
+    --popover: 217 33% 17%;
+    --popover-foreground: 210 40% 98%;
     
-    /* Primary Brand Color */
-    --primary: 213 94% 68%;
-    --primary-foreground: 222 47% 11%;
+    /* Primary Brand Color - More visible in dark mode */
+    --primary: 164 70% 39%;      /* #0F8A62 - Medium Teal (lighter) */
+    --primary-foreground: 210 40% 98%;
     
     /* Secondary Colors */
-    --secondary: 222 47% 11%;
-    --secondary-foreground: 213 31% 91%;
+    --secondary: 217 33% 25%;
+    --secondary-foreground: 210 40% 98%;
     
     /* Muted UI Elements */
-    --muted: 222 47% 11%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 217 33% 25%;
+    --muted-foreground: 215 20% 75%;
     
     /* Accent Color */
-    --accent: 216 34% 17%;
-    --accent-foreground: 213 31% 91%;
+    --accent: 217 90% 58%;       /* #2D7FF9 - Accessible Blue */
+    --accent-foreground: 210 40% 98%;
     
-    /* Status Colors */
-    --success: 142 70% 49%;
+    /* Status Colors - Brightened for dark mode visibility */
+    --success: 162 70% 40%;
     --success-foreground: 144 70% 10%;
-    --warning: 38 92% 50%;
+    --warning: 43 90% 50%;
     --warning-foreground: 48 96% 10%;
-    --destructive: 0 63% 31%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
     
     /* UI Element Colors */
-    --border: 216 34% 17%;
-    --input: 216 34% 17%;
-    --ring: 213 94% 68%;
+    --border: 217 33% 25%;
+    --input: 217 33% 25%;
+    --ring: 164 70% 39%;
 
     /* Sidebar variables */
-    --sidebar-background: 225 29% 7%;
-    --sidebar-foreground: 213 31% 91%;
-    --sidebar-primary: 213 31% 91%;
-    --sidebar-primary-foreground: 225 29% 7%;
-    --sidebar-accent: 216 34% 17%;
-    --sidebar-accent-foreground: 213 31% 91%;
-    --sidebar-border: 216 34% 17%;
-    --sidebar-ring: 213 94% 68%;
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 210 40% 98%;
+    --sidebar-primary-foreground: 217 33% 17%;
+    --sidebar-accent: 217 33% 25%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 25%;
+    --sidebar-ring: 164 70% 39%;
   }
 }
 
@@ -186,7 +186,7 @@
   
   /* Add gradient utility */
   .gradient-primary {
-    @apply bg-gradient-to-r from-primary to-blue-500;
+    @apply bg-gradient-to-r from-primary to-accent;
   }
 }
 

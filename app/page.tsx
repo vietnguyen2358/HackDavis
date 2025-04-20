@@ -39,18 +39,18 @@ export default function LandingPage() {
             <GlassCard className="absolute top-[20%] right-[0%] w-full max-w-md p-6 md:p-8 h-[400px] transform rotate-3 group overflow-hidden">
               <div className="absolute inset-0 opacity-20 bg-shimmer animate-shimmer" />
               <div className="relative h-full flex flex-col justify-center">
-                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/20 flex items-center justify-center">
+                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/30 flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                   </svg>
                 </div>
                 <h3 className="font-tiempos text-center text-xl font-bold text-white mb-2">AI Documentation</h3>
                 <div className="space-y-3 text-center">
-                  <p className="font-tiempos text-white/70 text-sm">Saves 10+ hours of paperwork weekly</p>
-                  <div className="h-px bg-white/10 w-full"></div>
-                  <p className="font-tiempos text-white/70 text-sm">Real-time transcription and analysis</p>
-                  <div className="h-px bg-white/10 w-full"></div>
-                  <p className="font-tiempos text-white/70 text-sm">HIPAA-compliant secure processing</p>
+                  <p className="font-tiempos text-white/80 text-sm">Saves 10+ hours of paperwork weekly</p>
+                  <div className="h-px bg-white/20 w-full"></div>
+                  <p className="font-tiempos text-white/80 text-sm">Real-time transcription and analysis</p>
+                  <div className="h-px bg-white/20 w-full"></div>
+                  <p className="font-tiempos text-white/80 text-sm">HIPAA-compliant secure processing</p>
                 </div>
               </div>
             </GlassCard>
@@ -152,12 +152,12 @@ export default function LandingPage() {
                 <motion.div
                   whileHover={{ 
                     scale: 1.05,
-                    background: "linear-gradient(to right, rgba(79, 70, 229, 1), rgba(37, 99, 235, 1))"
+                    background: "linear-gradient(to right, hsl(164, 80%, 24%), hsl(217, 90%, 58%))"
                   }}
                   transition={{ duration: 0.3 }}
                 >
                   <Link href="/dashboard" passHref>
-                    <Button size="lg" className="font-tiempos text-base font-medium px-8 py-6 bg-primary/90 backdrop-blur-sm border border-white/10 shadow-xl">
+                    <Button size="lg" className="font-tiempos text-base font-medium px-8 py-6 bg-primary/90 backdrop-blur-sm border border-primary/20 shadow-xl">
                       Get Started
                     </Button>
                   </Link>
@@ -165,7 +165,7 @@ export default function LandingPage() {
                 
                 <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
                   <Link href="#features" passHref>
-                    <Button size="lg" variant="outline" className="font-tiempos text-base font-medium px-8 py-6 bg-white/5 backdrop-blur-sm border-white/10 text-white hover:bg-white/10 shadow-lg">
+                    <Button size="lg" variant="outline" className="font-tiempos text-base font-medium px-8 py-6 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 shadow-lg">
                       Learn More
                     </Button>
                   </Link>
@@ -290,12 +290,12 @@ export default function LandingPage() {
       {/* CTA Section */}
       <section className="relative w-full py-20 md:py-28 overflow-hidden">
         {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-primary/20 z-0" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-primary/20 z-0" />
         
         {/* Floating elements */}
         <div className="absolute inset-0 z-0">
           <motion.div 
-            className="absolute top-20 left-[10%] w-24 h-24 rounded-full bg-primary/10 backdrop-blur-md"
+            className="absolute top-20 left-[10%] w-24 h-24 rounded-full bg-primary/20 backdrop-blur-md"
             animate={{ 
               y: [0, 15, 0],
               scale: [1, 1.05, 1],
@@ -304,7 +304,7 @@ export default function LandingPage() {
             transition={{ duration: 8, repeat: Infinity, repeatType: "mirror" }}
           />
           <motion.div 
-            className="absolute bottom-20 left-[15%] w-16 h-16 rounded-full bg-blue-500/10 backdrop-blur-md"
+            className="absolute bottom-20 left-[15%] w-16 h-16 rounded-full bg-accent/20 backdrop-blur-md"
             animate={{ 
               y: [0, -20, 0],
               scale: [1, 1.1, 1],
@@ -313,7 +313,7 @@ export default function LandingPage() {
             transition={{ duration: 10, repeat: Infinity, repeatType: "mirror", delay: 1 }}
           />
           <motion.div 
-            className="absolute top-40 right-[15%] w-20 h-20 rounded-full bg-indigo-500/10 backdrop-blur-md"
+            className="absolute top-40 right-[15%] w-20 h-20 rounded-full bg-accent/20 backdrop-blur-md"
             animate={{ 
               y: [0, 25, 0],
               scale: [1, 1.08, 1],
@@ -322,7 +322,7 @@ export default function LandingPage() {
             transition={{ duration: 12, repeat: Infinity, repeatType: "mirror", delay: 2 }}
           />
           <motion.div 
-            className="absolute bottom-32 right-[10%] w-12 h-12 rounded-full bg-cyan-500/10 backdrop-blur-md"
+            className="absolute bottom-32 right-[10%] w-12 h-12 rounded-full bg-primary/20 backdrop-blur-md"
             animate={{ 
               y: [0, -15, 0],
               scale: [1, 1.15, 1],
@@ -348,12 +348,12 @@ export default function LandingPage() {
                 className="w-full sm:w-auto"
                 whileHover={{ 
                   scale: 1.05,
-                  background: "linear-gradient(to right, rgba(79, 70, 229, 1), rgba(37, 99, 235, 1))"
+                  background: "linear-gradient(to right, hsl(164, 80%, 24%), hsl(217, 90%, 58%))"
                 }}
                 transition={{ duration: 0.3 }}
               >
                 <Link href="/dashboard" passHref className="w-full block">
-                  <Button size="lg" className="w-full sm:w-auto font-tiempos text-base font-medium px-8 py-6 bg-primary/90 backdrop-blur-sm border border-white/10 shadow-xl">
+                  <Button size="lg" className="w-full sm:w-auto font-tiempos text-base font-medium px-8 py-6 bg-primary/90 backdrop-blur-sm border border-primary/20 shadow-xl">
                     Get Started Today
                   </Button>
                 </Link>

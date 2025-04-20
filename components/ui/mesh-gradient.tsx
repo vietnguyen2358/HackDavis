@@ -137,10 +137,14 @@ function GradientMesh() {
   const materialRef = useRef<THREE.ShaderMaterial>(null)
   
   // Define the colors for your gradient
-  const primaryColor = new THREE.Color("#4F46E5") // Indigo
-  const secondaryColor = new THREE.Color("#2563EB") // Blue
-  const tertiaryColor = new THREE.Color("#7DD3FC") // Light blue
+  // const primaryColor = new THREE.Color("#4F46E5") // Indigo
+  // const secondaryColor = new THREE.Color("#2563EB") // Blue
+  // const tertiaryColor = new THREE.Color("#7DD3FC") // Light blue
   
+  const primaryColor = new THREE.Color("#085240")    // Dark Teal
+  const secondaryColor = new THREE.Color("#0C6E4F")  // Deep Teal
+  const tertiaryColor = new THREE.Color("#2D7FF9")   // Accessible Blue (accent)
+
   const uniforms = useMemo(() => {
     return {
       uTime: { value: 0 },

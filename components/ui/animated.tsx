@@ -2,6 +2,7 @@
 
 import { ReactNode, useRef, useState, useEffect } from "react"
 import { motion, useInView, Variants } from "framer-motion"
+import { cn } from "@/lib/utils"
 
 // Fade in animation
 export function FadeIn({
@@ -233,21 +234,45 @@ export function CountNumber({
 export function GlassCard({
   children,
   className = "",
+  intensity = "medium",
+  ...rest
 }: {
   children: ReactNode
   className?: string
+  intensity?: "light" | "medium" | "strong"
 }) {
+  const intensityMap = {
+    light: {
+      bg: "bg-white/10 dark:bg-white/5",
+      border: "border-white/20 dark:border-white/10",
+      shadow: "shadow-lg shadow-black/5"
+    },
+    medium: {
+      bg: "bg-white/20 dark:bg-white/10",
+      border: "border-white/30 dark:border-white/20",
+      shadow: "shadow-xl shadow-black/10"
+    },
+    strong: {
+      bg: "bg-white/30 dark:bg-white/15",
+      border: "border-white/40 dark:border-white/30",
+      shadow: "shadow-2xl shadow-black/20"
+    }
+  };
+
+  const styles = intensityMap[intensity];
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.5 }}
-      className={`relative backdrop-blur-md bg-white/10 dark:bg-gray-900/30 
-        border border-white/20 dark:border-gray-800/30 rounded-xl 
-        shadow-xl ${className}`}
+      className={cn(
+        "rounded-xl border backdrop-blur-md",
+        styles.bg,
+        styles.border,
+        styles.shadow,
+        className
+      )}
+      {...rest}
     >
       {children}
     </motion.div>
-  )
+  );
 } 
