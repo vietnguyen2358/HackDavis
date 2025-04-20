@@ -1,4 +1,4 @@
-const mongoose=require('mongoose');
+import mongoose from 'mongoose';  
 const patientSchema=new mongoose.Schema({
     patientName:{
         type:String,
@@ -16,8 +16,9 @@ const patientSchema=new mongoose.Schema({
         required:true,
     },
     time:{
-    required: true,
-    match: /^((0?[1-9]|1[0-2]):[0-5][0-9]\s?(am|pm))$/i
+        type:String,
+        required: true,
+        match: /^((0?[1-9]|1[0-2]):[0-5][0-9]\s?(am|pm))$/i
     },
     details:{
         notes:{
@@ -29,4 +30,4 @@ const patientSchema=new mongoose.Schema({
     }
 })
 const Patient=mongoose.model('Patient',patientSchema)
-model.export=Patient
+export default Patient;

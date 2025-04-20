@@ -43,3 +43,28 @@ export async function uploadPatients(patients) {
   }
   return upserted;
 }
+
+export async function uploadPatientAppointmentInfo(patientsAppointmentInfo){
+  const db=await connectToDatabase();
+  const collection=db.collection("patientsAppointmentInfo");
+  let inserted=0;
+
+  for (const patient of patientsAppointmentInfo) {
+    const result = await collection.insertOne({
+      patientName: patient.patientName,
+      date: new Date(patient.date), // Ensures it's stored as Date
+      type: patient.type,
+      time: patient.time,
+      details: {
+        notes: patient.details?.notes || '',
+        createdBy: patient.details?.createdBy || ''
+      }
+    });
+
+    if (result.insertedId) inserted++;
+  }
+
+  return inserted;
+
+
+}
