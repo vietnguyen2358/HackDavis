@@ -15,12 +15,27 @@ oauth2Client.setCredentials({
 })
 
 function parseTimeTo24Hour(timeStr){
-    const [_, hour, minute, period] = timeStr.match(/(\d+):(\d+)\s?(am|pm)/i) || [];
-  let hrs = parseInt(hour);
-  const mins = parseInt(minute);
-  if (period.toLowerCase() === "pm" && hrs !== 12) hrs += 12;
-  if (period.toLowerCase() === "am" && hrs === 12) hrs = 0;
-  return { hrs, mins };
+    if (!timeStr) throw new Error("Missing time string");
+
+    // Try to match 12-hour format first
+    let match = timeStr.match(/(\d+):(\d+)\s?(am|pm)/i);
+    if (match) {
+        const [_, hour, minute, period] = match;
+        let hrs = parseInt(hour);
+        const mins = parseInt(minute);
+        if (period.toLowerCase() === "pm" && hrs !== 12) hrs += 12;
+        if (period.toLowerCase() === "am" && hrs === 12) hrs = 0;
+        return { hrs, mins };
+    }
+
+    // Try to match 24-hour format (e.g., "16:30")
+    match = timeStr.match(/^([01]?[0-9]|2[0-3]):([0-5][0-9])$/);
+    if (match) {
+        const [_, hour, minute] = match;
+        return { hrs: parseInt(hour), mins: parseInt(minute) };
+    }
+
+    throw new Error("Invalid time format: " + timeStr);
 }
 
 const calendar=google.calendar({version:'v3',auth:oauth2Client})

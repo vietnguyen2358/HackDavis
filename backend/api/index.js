@@ -9,13 +9,18 @@ import { connectToDatabase } from "./mongodb/mongodb.js";
 import { registerInboundRoutes } from './inbound-calls.js';
 import { registerOutboundRoutes } from './outbound-calls.js';
 import { v4 as uuidv4 } from 'uuid';
-
+import fastifyCors from '@fastify/cors';
 // Load environment variables from .env file in HackDavis root directory
 dotenv.config({ path: path.join(process.cwd(), '..', '..', '.env') });
 
 // Initialize Fastify server
 const fastify = Fastify({
   logger: true // Enable logging
+});
+
+await fastify.register(fastifyCors, {
+  // You can customize options here, for example:
+  origin: true // or origin: 'http://localhost:3000'
 });
 
 fastify.register(fastifyFormBody);
