@@ -113,7 +113,7 @@
   }
   body {
     @apply bg-background text-foreground min-h-screen font-sans antialiased;
-    font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: var(--font-tiempos), Georgia, serif;
   }
 }
 
@@ -148,35 +148,35 @@
 /* Add typography utilities */
 @layer components {
   .h1 {
-    @apply text-3xl font-bold tracking-tight md:text-4xl scroll-m-20;
+    @apply text-3xl font-bold tracking-tight md:text-4xl scroll-m-20 font-tiempos;
   }
   
   .h2 {
-    @apply text-2xl font-semibold tracking-tight md:text-3xl scroll-m-20;
+    @apply text-2xl font-semibold tracking-tight md:text-3xl scroll-m-20 font-tiempos;
   }
   
   .h3 {
-    @apply text-xl font-semibold tracking-tight md:text-2xl scroll-m-20;
+    @apply text-xl font-semibold tracking-tight md:text-2xl scroll-m-20 font-tiempos;
   }
   
   .h4 {
-    @apply text-lg font-semibold tracking-tight md:text-xl scroll-m-20;
+    @apply text-lg font-semibold tracking-tight md:text-xl scroll-m-20 font-tiempos;
   }
   
   .lead {
-    @apply text-xl text-muted-foreground;
+    @apply text-xl text-muted-foreground font-tiempos;
   }
   
   .large {
-    @apply text-lg font-medium;
+    @apply text-lg font-medium font-tiempos;
   }
   
   .small {
-    @apply text-sm font-medium leading-none;
+    @apply text-sm font-medium leading-none font-tiempos;
   }
   
   .subtle {
-    @apply text-sm text-muted-foreground;
+    @apply text-sm text-muted-foreground font-tiempos;
   }
   
   /* Add mobile navigation spacing */

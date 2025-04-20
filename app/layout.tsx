@@ -36,7 +36,7 @@ export default function RootLayout({
         {/* Add meta viewport for responsive design */}
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
       </head>
-      <body suppressHydrationWarning className="w-full h-full font-inter">
+      <body suppressHydrationWarning className="w-full h-full font-tiempos">
         <AppStateProvider>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
             <SidebarProvider defaultOpen={false} open={false}>
