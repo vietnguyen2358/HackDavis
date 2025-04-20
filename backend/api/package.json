@@ -16,6 +16,7 @@
     "@fastify/formbody": "^8.0.1",
     "@fastify/websocket": "^11.0.1",
     "@types/node": "^18.0.6",
+    "aws4": "^1.13.2",
     "axios": "^1.7.9",
     "dotenv": "^16.5.0",
     "elevenlabs": "^0.18.1",
@@ -25,6 +26,7 @@
     "mongodb": "^6.15.0",
     "node-fetch": "^3.3.2",
     "twilio": "^5.3.7",
+    "uuid": "^11.1.0",
     "ws": "^8.18.0"
   }
 }

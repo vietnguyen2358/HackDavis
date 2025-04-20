@@ -5,12 +5,13 @@ dotenv.config({ path: '../../.env' });
 
 const password = process.env.MONGODB_PASSWORD;
 // Specify the database name in the URI
-const dbName = "patient";
-const uri = `mongodb+srv://vietnguyen2358:${password}@patient.imvx6w9.mongodb.net/${dbName}?appName=Patient`;
+const defaultDbName = "patient";
+const uri = `mongodb+srv://vietnguyen2358:${password}@patient.imvx6w9.mongodb.net/?appName=Patient`;
 
 const client = new MongoClient(uri);
 
-export async function connectToDatabase() {
+// Pass dbName as an argument (optional, defaults to patient)
+export async function connectToDatabase(dbName = defaultDbName) {
   if (!client.topology || !client.topology.isConnected()) {
     await client.connect();
   }
@@ -34,6 +35,10 @@ export async function uploadPatients(patients) {
   await ensureUniqueIndex(collection);
   let upserted = 0;
   for (const patient of patients) {
+    // Ensure a unique id for each patient
+    if (!patient.id) {
+      patient.id = (await import('uuid')).v4();
+    }
     const result = await collection.updateOne(
       { id: patient.id },
       { $set: patient },
@@ -50,7 +55,12 @@ export async function uploadPatientAppointmentInfo(patientsAppointmentInfo){
   let inserted=0;
 
   for (const patient of patientsAppointmentInfo) {
+    // Ensure a unique id for each appointment info
+    if (!patient.id) {
+      patient.id = (await import('uuid')).v4();
+    }
     const result = await collection.insertOne({
+      id: patient.id,
       patientName: patient.patientName,
       date: new Date(patient.date), // Ensures it's stored as Date
       type: patient.type,
@@ -65,6 +75,4 @@ export async function uploadPatientAppointmentInfo(patientsAppointmentInfo){
   }
 
   return inserted;
-
-
 }
