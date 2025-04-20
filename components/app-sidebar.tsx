@@ -10,7 +10,7 @@ import {
   Phone,
   Settings,
   Users,
-  X
+  ChevronLeft
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
@@ -32,6 +32,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { NewJobModal } from "@/components/new-job-modal"
 import { SheetTitle } from "@/components/ui/sheet"
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 
 export function AppSidebar() {
   const pathname = usePathname()
@@ -90,29 +91,38 @@ export function AppSidebar() {
 
   // Toggle sidebar button
   const ToggleSidebarButton = () => {
-    if (!mounted) return null; // Prevent hydration errors
-
-    return (
-      <Button 
-        variant="ghost" 
-        size="icon" 
-        className={`${
-          isLandingPage 
-            ? 'block' // Always show on landing page
-            : 'md:hidden block' // Only show on small screens for non-landing pages
-        } fixed top-4 left-4 z-50 bg-background shadow-md rounded-full flex items-center justify-center`} 
-        onClick={() => {
-          if (isMobile) {
-            toggleSidebar()
-          } else {
-            setSidebarVisible(!sidebarVisible)
-          }
-        }}
-        aria-label="Toggle menu"
-      >
-        {(openMobile || (isLandingPage && sidebarVisible)) ? <X className="h-5 w-5" /> : <PanelLeft className="h-5 w-5" />}
-      </Button>
-    );
+    if (!mounted || !isLandingPage) return null; // Prevent hydration errors and only show on landing page
+    
+    // For closed sidebar - show at top left of screen
+    if (!((isMobile && openMobile) || (!isMobile && sidebarVisible))) {
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="fixed top-4 left-4 z-50 bg-background shadow-md rounded-full flex items-center justify-center" 
+              onClick={() => {
+                if (isMobile) {
+                  toggleSidebar()
+                } else {
+                  setSidebarVisible(true)
+                }
+              }}
+              aria-label="Open menu"
+            >
+              <PanelLeft className="h-5 w-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right" align="center">
+            Toggle sidebar
+          </TooltipContent>
+        </Tooltip>
+      );
+    }
+    
+    // Don't render anything here for open sidebar - it will be rendered inside sidebar
+    return null;
   };
 
   const sidebarContent = (
@@ -176,6 +186,32 @@ export function AppSidebar() {
             <Settings className="h-4 w-4" />
           </Button>
         </div>
+        
+        {/* Toggle button at bottom right of sidebar when open */}
+        {isLandingPage && ((isMobile && openMobile) || (!isMobile && sidebarVisible)) && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="absolute bottom-4 right-4 rounded-full bg-sidebar-accent/50 hover:bg-sidebar-accent transition-colors"
+                onClick={() => {
+                  if (isMobile) {
+                    setOpenMobile(false);
+                  } else {
+                    setSidebarVisible(false);
+                  }
+                }}
+                aria-label="Close sidebar"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="left" align="center">
+              Toggle sidebar
+            </TooltipContent>
+          </Tooltip>
+        )}
       </SidebarFooter>
     </>
   );
