@@ -85,7 +85,9 @@ export function PatientsList() {
         {patients.map((patient) => (
           <div key={patient.id} className="flex items-start gap-4 p-4 rounded-lg border">
             <Avatar className="h-12 w-12">
-              <AvatarFallback>{patient.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+              <AvatarFallback>
+                {patient.name ? patient.name.split(' ').map(n => n[0]).join('') : '??'}
+              </AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <div className="flex items-center justify-between">
@@ -97,13 +99,13 @@ export function PatientsList() {
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Calendar className="h-3 w-3" />
                       <span>
-                        {patient.appointments.length > 0 
+                        {patient.appointments?.length > 0 
                           ? `Next: ${patient.appointments[0].type} on ${new Date(patient.appointments[0].date).toLocaleDateString()}`
                           : 'No upcoming appointments'}
                       </span>
                     </div>
                     <Badge variant="outline" className="w-fit">
-                      {patient.medicalHistory.conditions.length > 0 
+                      {patient.medicalHistory?.conditions?.length > 0 
                         ? patient.medicalHistory.conditions[0]
                         : 'No conditions'}
                     </Badge>
