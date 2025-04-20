@@ -12,7 +12,8 @@ router.post("/make-appointment",async(req,res)=>{
         console.log(newPatient)
         await newPatient.save();
 
-        const upsertedCount = await uploadPatientAppointmentInfo([patientData]);  // Pass the data as an array
+        const upsertedCount = await uploadPatientAppointmentInfo([patientData]); 
+
         console.log(`${upsertedCount} appointments upserted`);
 
         const calanderEvent=await createCalendarEvent(patientData)
@@ -28,6 +29,41 @@ router.post("/make-appointment",async(req,res)=>{
         res.status(500).json({
             "error_message":"Failed to schedule appointment "
         })
+    }
+})
+
+router.get("/get-patients-appointments/:date",async(req,res)=>{
+    const dateString=req.params.date;
+
+    if(!dateString){
+        return res.status(400).json({error:"Missing date url variable"})
+    }
+    try{
+        const patientsByDate=await Appointment.find({
+            date:dateString
+        });
+
+        console.log(patientsByDate)
+        res.json(patientsByDate)
+
+    }catch(err){
+        res.status(500).json({error:"Errr with getting the patients info by date"})
+    }
+});
+
+router.get("/get-patients-appointments-details/:id",async(req,res)=>{
+    try{
+        const userId=new ObjectId(req.params.id)
+        
+        const user=await Appointment.findById({_id:userId})
+
+        if(!user){
+            return res.status(404).json({message:"User not found"})
+        }
+        console.log(user)
+        res.json(user)
+    }catch(error){
+        res.status(500).json({message:"Unable to find user by their id"})
     }
 })
 export default router
