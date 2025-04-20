@@ -34,6 +34,10 @@ export async function uploadPatients(patients) {
   await ensureUniqueIndex(collection);
   let upserted = 0;
   for (const patient of patients) {
+    // Ensure a unique id for each patient
+    if (!patient.id) {
+      patient.id = (await import('uuid')).v4();
+    }
     const result = await collection.updateOne(
       { id: patient.id },
       { $set: patient },
@@ -50,7 +54,12 @@ export async function uploadPatientAppointmentInfo(patientsAppointmentInfo){
   let inserted=0;
 
   for (const patient of patientsAppointmentInfo) {
+    // Ensure a unique id for each appointment info
+    if (!patient.id) {
+      patient.id = (await import('uuid')).v4();
+    }
     const result = await collection.insertOne({
+      id: patient.id,
       patientName: patient.patientName,
       date: new Date(patient.date), // Ensures it's stored as Date
       type: patient.type,
@@ -65,6 +74,4 @@ export async function uploadPatientAppointmentInfo(patientsAppointmentInfo){
   }
 
   return inserted;
-
-
 }
