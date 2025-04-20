@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -14,12 +14,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 
 const formSchema = z.object({
-  patientName: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
+  patientId: z.string().min(1, { message: "Patient is required." }),
   date: z.string().min(1, { message: "Date is required." }),
   time: z.string().min(1, { message: "Time is required." }),
-  doctor: z.string().min(2, { message: "Doctor is required." }),
+  doctorId: z.string().min(1, { message: "Doctor is required." }),
   reason: z.string().min(2, { message: "Reason is required." }),
   type: z.enum(["Check-up", "Follow-up", "Consultation"]),
   notes: z.string().optional(),
@@ -33,14 +31,35 @@ export function NewUpcomingAppointmentForm({ onSuccess }: NewUpcomingAppointment
   const { toast } = useToast()
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [patients, setPatients] = useState<{ id: string, name: string }[]>([])
+  const [doctors, setDoctors] = useState<{ id: string, name: string }[]>([])
+
+  useEffect(() => {
+    async function fetchDropdownData() {
+      try {
+        const [patientsRes, doctorsRes] = await Promise.all([
+          fetch("/patients"),
+          fetch("/doctors")
+        ]);
+        const patientsData = await patientsRes.json();
+        const doctorsData = await doctorsRes.json();
+        setPatients(Array.isArray(patientsData) ? patientsData : []);
+        setDoctors(Array.isArray(doctorsData) ? doctorsData : []);
+      } catch (err) {
+        setPatients([]);
+        setDoctors([]);
+      }
+    }
+    fetchDropdownData();
+  }, [])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      patientName: "",
+      patientId: "",
       date: "",
       time: "",
-      doctor: "",
+      doctorId: "",
       reason: "",
       type: "Check-up",
       notes: "",
@@ -50,11 +69,16 @@ export function NewUpcomingAppointmentForm({ onSuccess }: NewUpcomingAppointment
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true)
     try {
+      // Find selected patient and doctor names for display or backend
+      const selectedPatient = patients.find(p => p.id === values.patientId)
+      const selectedDoctor = doctors.find(d => d.id === values.doctorId)
       const response = await fetch("/api/google-calander/make-appointment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...values,
+          patientName: selectedPatient ? selectedPatient.name : undefined,
+          doctor: selectedDoctor ? selectedDoctor.name : undefined,
           details: { notes: values.notes },
           status: "pending",
         }),
@@ -78,12 +102,21 @@ export function NewUpcomingAppointmentForm({ onSuccess }: NewUpcomingAppointment
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
-          name="patientName"
+          name="patientId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Patient Name</FormLabel>
+              <FormLabel>Patient</FormLabel>
               <FormControl>
-                <Input placeholder="Enter patient name" {...field} />
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select patient" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {patients.filter(patient => patient.id && patient.name).map((patient) => (
+                      <SelectItem key={patient.id} value={patient.id}>{patient.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -117,12 +150,21 @@ export function NewUpcomingAppointmentForm({ onSuccess }: NewUpcomingAppointment
         />
         <FormField
           control={form.control}
-          name="doctor"
+          name="doctorId"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Doctor</FormLabel>
               <FormControl>
-                <Input placeholder="Enter doctor's name" {...field} />
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select doctor" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {doctors.filter(doctor => doctor.id && doctor.name).map((doctor) => (
+                      <SelectItem key={doctor.id} value={doctor.id}>{doctor.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -147,18 +189,18 @@ export function NewUpcomingAppointmentForm({ onSuccess }: NewUpcomingAppointment
           render={({ field }) => (
             <FormItem>
               <FormLabel>Type</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="Check-up">Check-up</SelectItem>
-                  <SelectItem value="Follow-up">Follow-up</SelectItem>
-                  <SelectItem value="Consultation">Consultation</SelectItem>
-                </SelectContent>
-              </Select>
+                  <SelectContent>
+                    <SelectItem value="Check-up">Check-up</SelectItem>
+                    <SelectItem value="Follow-up">Follow-up</SelectItem>
+                    <SelectItem value="Consultation">Consultation</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -176,8 +218,8 @@ export function NewUpcomingAppointmentForm({ onSuccess }: NewUpcomingAppointment
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isSubmitting} className="w-full">
-          {isSubmitting ? "Creating..." : "Create Appointment"}
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Submitting..." : "Create Appointment"}
         </Button>
       </form>
     </Form>
