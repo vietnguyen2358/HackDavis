@@ -65,7 +65,7 @@ export default function LandingPage() {
   );
 
   return (
-    <div className="flex flex-col min-h-screen mobile-nav-spacing">
+    <div className="flex flex-col min-h-screen">
       {/* Performance toggle */}
       <button 
         onClick={togglePerformanceMode}

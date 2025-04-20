@@ -120,7 +120,7 @@ export function AppSidebar() {
 
   // Mobile menu toggle button
   const MobileMenuButton = () => {
-    if (!mounted) return null;
+    if (!mounted || isLandingPage) return null;
 
     return (
       <Button 
@@ -144,9 +144,11 @@ export function AppSidebar() {
           </div>
           <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">HealthAssist AI</span>
         </Link>
-        <div className="mt-6 w-full">
-          <NewJobModal />
-        </div>
+        {!isLandingPage && (
+          <div className="mt-6 w-full">
+            <NewJobModal />
+          </div>
+        )}
       </SidebarHeader>
 
       <SidebarSeparator className="my-2" />
@@ -257,7 +259,9 @@ export function AppSidebar() {
         variant="floating" 
         collapsible={isMobile ? "offcanvas" : isLandingPage ? (sidebarVisible ? "none" : "icon") : "none"} 
         className={`border-r shadow-md transition-all duration-300 h-screen ${
-          isLandingPage && !sidebarVisible && !isMobile ? 'md:w-0 md:min-w-0 md:p-0 md:m-0 md:border-0 md:opacity-0' : 'md:block'
+          isLandingPage && !sidebarVisible && !isMobile 
+            ? 'md:w-0 md:min-w-0 md:p-0 md:m-0 md:border-0 md:opacity-0 md:pointer-events-none md:hidden' 
+            : 'md:block'
         }`}
       >
         {isMobile && <SheetTitle className="sr-only">Navigation Menu</SheetTitle>}
