@@ -83,12 +83,12 @@ export default function LandingPage() {
         
         {/* Floating feature cards in background - only in high performance mode */}
         {!isLowPerformanceMode && (
-          <div className="absolute inset-0 z-[1] pointer-events-none hidden md:block">
+          <div className="absolute inset-0 z-[1] pointer-events-none hidden lg:block">
             <div className="absolute top-0 right-0 w-1/2 h-full overflow-hidden">
-              <GlassCard className="absolute top-[20%] right-[0%] w-full max-w-md p-6 md:p-8 h-[400px] transform rotate-3 group overflow-hidden">
+              <GlassCard className="absolute bottom-[52%] left-[10%] w-full max-w-sm p-6 md:p-8 h-[300px] transform -rotate-2 group overflow-hidden">
                 <div className="absolute inset-0 opacity-20 bg-shimmer animate-shimmer" />
                 <div className="relative h-full flex flex-col justify-center">
-                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/30 flex items-center justify-center">
+                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/30 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                     </svg>
@@ -100,6 +100,27 @@ export default function LandingPage() {
                     <p className="font-tiempos text-white/80 text-sm">Real-time transcription and analysis</p>
                     <div className="h-px bg-white/20 w-full"></div>
                     <p className="font-tiempos text-white/80 text-sm">HIPAA-compliant secure processing</p>
+                  </div>
+                </div>
+              </GlassCard>
+            </div>
+            
+            <div className="absolute bottom-[3%] right-[5%] w-1/3 h-1/2">
+              <GlassCard className="absolute bottom-[10%] left-[20%] w-full max-w-sm p-6 md:p-8 h-[300px] transform rotate-6 group overflow-hidden">
+                <div className="absolute inset-0 opacity-20 bg-shimmer animate-shimmer" />
+                <div className="relative h-full flex flex-col justify-center">
+                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-500/30 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                    </svg>
+                  </div>
+                  <h3 className="font-tiempos text-center text-xl font-bold text-white mb-2">Smart Scheduling</h3>
+                  <div className="space-y-3 text-center">
+                    <p className="font-tiempos text-white/80 text-sm">AI-optimized appointment management</p>
+                    <div className="h-px bg-white/20 w-full"></div>
+                    <p className="font-tiempos text-white/80 text-sm">Reduces no-shows by 68%</p>
+                    <div className="h-px bg-white/20 w-full"></div>
+                    <p className="font-tiempos text-white/80 text-sm">Automated reminders and follow-ups</p>
                   </div>
                 </div>
               </GlassCard>
@@ -273,6 +294,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                 </GlassCard>
+                
               </ScaleOnHover>
             ))}
           </StaggerChildren>
@@ -458,8 +480,8 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
             <div className="md:col-span-2">
               <div className="flex items-center gap-2 mb-4">
-                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-sm">
-                  <span className="text-lg font-bold">H</span>
+                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-sm overflow-hidden">
+                  <Image src="/logo.svg" alt="HealthAssist AI" width={36} height={36} />
                 </div>
                 <span className="text-xl font-bold font-tiempos">HealthAssist AI</span>
               </div>
