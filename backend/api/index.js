@@ -5,7 +5,7 @@ import fastifyFormBody from "@fastify/formbody";
 import fastifyWs from "@fastify/websocket";
 import { MongoClient } from "mongodb";
 import { createCalendarEvent } from './google-calander/utils/googleCalander.js';
-import { connectToDatabase, uploadPatientAppointmentInfo } from "./mongodb/mongodb.js";
+import { connectToDatabase } from "./mongodb/mongodb.js";
 import { registerInboundRoutes } from './inbound-calls.js';
 import { registerOutboundRoutes } from './outbound-calls.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -35,6 +35,15 @@ fastify.get("/", async (_, reply) => {
 
 console.log('Registering /appointment routes...');
 
+// Ensure the unique index on (patientName, date, time) exists (one-time setup, safe to call multiple times)
+(async () => {
+  const db = await connectToDatabase();
+  await db.collection('appointments').createIndex(
+    { patientName: 1, date: 1, time: 1 },
+    { unique: true }
+  );
+})();
+
 // Register /appointment routes (converted from Express to Fastify)
 fastify.post('/appointment/make-appointment', async (request, reply) => {
   try {
@@ -56,6 +65,20 @@ fastify.post('/appointment/make-appointment', async (request, reply) => {
       });
     }
     
+    // Check for existing appointment with same patientName, date, and time
+    const existing = await appointmentsCollection.findOne({
+      patientName: patientData.patientName,
+      date: new Date(patientData.date),
+      time: patientData.time
+    });
+    if (existing) {
+      return reply.code(409).send({
+        error_message: 'Duplicate appointment',
+        details: 'An appointment for this patient at this date and time already exists.',
+        appointment: existing
+      });
+    }
+    
     // Format the appointment document
     const appointmentDoc = {
       id: patientData.id,
@@ -72,10 +95,6 @@ fastify.post('/appointment/make-appointment', async (request, reply) => {
     
     // Insert the appointment
     const result = await appointmentsCollection.insertOne(appointmentDoc);
-    
-    // Add appointment info to patient appointments collection
-    const upsertedCount = await uploadPatientAppointmentInfo([patientData]);
-    console.log(`${upsertedCount} appointments upserted`);
 
     // Create calendar event
     const calanderEvent = await createCalendarEvent(patientData);
