@@ -89,24 +89,22 @@ export function NewJobForm() {
       }
       
       console.log('Submitting job data:', jobData)
+      console.log('Selected patient:', selectedPatient)
+      console.log('Job type:', values.jobType)
       
       // Use the ngrok URL from environment variable
       const ngrokUrl = process.env.NEXT_PUBLIC_NGROK_URL
       if (!ngrokUrl) {
-        throw new Error('Service URL not configured. Please check your environment settings.')
+        throw new Error('Ngrok URL not configured')
       }
       
-      // Validate ngrok URL format
-      try {
-        new URL(ngrokUrl)
-      } catch (e) {
-        throw new Error('Invalid service URL format')
-      }
+      console.log('Using ngrok URL:', ngrokUrl)
+      // Remove trailing slash if present to avoid double slashes
+      const baseUrl = ngrokUrl.endsWith('/') ? ngrokUrl.slice(0, -1) : ngrokUrl
+      const apiUrl = `${baseUrl}/outbound-call`
+      console.log('Full API URL:', apiUrl)
       
-      console.log('Using service URL:', ngrokUrl)
-      const apiUrl = `${ngrokUrl}/outbound-call`
-      
-      // Try to use our own API as a proxy to avoid CORS issues
+      // Use our own API as a proxy to avoid CORS issues
       const response = await fetch('/api/proxy-outbound-call', {
         method: 'POST',
         headers: {
@@ -118,12 +116,16 @@ export function NewJobForm() {
         }),
       })
 
-      const responseData = await response.json()
-      console.log('API response:', responseData)
+      console.log('API response status:', response.status)
       
-      if (!response.ok || !responseData.success) {
-        throw new Error(responseData.error || 'Failed to create job')
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error('API error response:', errorText)
+        throw new Error(`Failed to create job: ${response.status} ${errorText}`)
       }
+
+      const responseData = await response.json()
+      console.log('API success response:', responseData)
 
       toast({
         title: "Job created successfully",
@@ -191,10 +193,8 @@ export function NewJobForm() {
                 <SelectContent>
                   <SelectItem value="checkup">Patient Check-up</SelectItem>
                   <SelectItem value="appointment">Schedule Appointment</SelectItem>
+                  <SelectItem value="reminder">Appointment Reminder</SelectItem>
                   <SelectItem value="followup">Patient Follow-up</SelectItem>
-                  <SelectItem value="documentation">Documentation</SelectItem>
-                  <SelectItem value="paperwork">Paperwork Automation</SelectItem>
-                  <SelectItem value="call">Outgoing Call</SelectItem>
                 </SelectContent>
               </Select>
               <FormDescription>Select the type of task for the AI assistant to perform</FormDescription>
