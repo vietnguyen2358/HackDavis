@@ -5,12 +5,13 @@ dotenv.config({ path: '../../.env' });
 
 const password = process.env.MONGODB_PASSWORD;
 // Specify the database name in the URI
-const dbName = "patient";
-const uri = `mongodb+srv://vietnguyen2358:${password}@patient.imvx6w9.mongodb.net/${dbName}?appName=Patient`;
+const defaultDbName = "patient";
+const uri = `mongodb+srv://vietnguyen2358:${password}@patient.imvx6w9.mongodb.net/?appName=Patient`;
 
 const client = new MongoClient(uri);
 
-export async function connectToDatabase() {
+// Pass dbName as an argument (optional, defaults to patient)
+export async function connectToDatabase(dbName = defaultDbName) {
   if (!client.topology || !client.topology.isConnected()) {
     await client.connect();
   }
