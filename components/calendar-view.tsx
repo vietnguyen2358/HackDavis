@@ -1,59 +1,85 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Calendar } from "@/components/ui/calendar"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
+
+// Interface matching the appointment structure in JSON/API
+interface Appointment {
+  id: string;
+  patientId: string;
+  doctorId: string;
+  patientName?: string;
+  doctorName?: string;
+  date: string;
+  time: string;
+  type: string;
+  status: string;
+  notes?: string;
+}
+
+// Helper to format YYYY-MM-DD
+const formatDate = (date: Date): string => {
+  return date.toISOString().split('T')[0];
+};
 
 export function CalendarView() {
-  const [date, setDate] = useState<Date | undefined>(new Date())
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
+  const [appointments, setAppointments] = useState<Appointment[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // Sample appointments data
-  const appointments = [
-    {
-      id: 1,
-      patientName: "Emma Thompson",
-      time: "10:00 AM",
-      type: "Check-up",
-      avatar: "/placeholder.svg?height=40&width=40",
-      initials: "ET",
-    },
-    {
-      id: 2,
-      patientName: "Michael Chen",
-      time: "11:30 AM",
-      type: "Follow-up",
-      avatar: "/placeholder.svg?height=40&width=40",
-      initials: "MC",
-    },
-    {
-      id: 3,
-      patientName: "Sophia Rodriguez",
-      time: "1:15 PM",
-      type: "Consultation",
-      avatar: "/placeholder.svg?height=40&width=40",
-      initials: "SR",
-    },
-    {
-      id: 4,
-      patientName: "James Wilson",
-      time: "2:45 PM",
-      type: "Check-up",
-      avatar: "/placeholder.svg?height=40&width=40",
-      initials: "JW",
-    },
-    {
-      id: 5,
-      patientName: "Olivia Martinez",
-      time: "4:00 PM",
-      type: "Follow-up",
-      avatar: "/placeholder.svg?height=40&width=40",
-      initials: "OM",
-    },
-  ]
+  // Fetch appointments when selectedDate changes
+  useEffect(() => {
+    if (!selectedDate) return
+
+    const fetchAppointments = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const dateString = formatDate(selectedDate)
+        // Fetch appointments for the selected date
+        const response = await fetch(`/api/appointments?date=${dateString}`)
+        if (!response.ok) {
+          throw new Error("Failed to fetch appointments for the selected date")
+        }
+        const data = await response.json()
+        setAppointments(Array.isArray(data) ? data : [])
+      } catch (err) {
+        console.error("Error fetching appointments:", err)
+        setError(err instanceof Error ? err.message : "Failed to load appointments")
+        setAppointments([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchAppointments()
+  }, [selectedDate]) // Re-fetch when selectedDate changes
+
+  // Function to handle date selection from the calendar
+  const handleDateSelect = (date: Date | undefined) => {
+    setSelectedDate(date)
+  }
+
+  // Function to change date using buttons
+  const changeDate = (days: number) => {
+    setSelectedDate(prevDate => {
+      if (!prevDate) return new Date()
+      const newDate = new Date(prevDate)
+      newDate.setDate(newDate.getDate() + days)
+      return newDate
+    })
+  }
+
+  // Get initials for AvatarFallback
+  const getInitials = (name?: string) => {
+    return name ? name.split(' ').map(n => n[0]).join('') : '?'
+  }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
@@ -62,8 +88,8 @@ export function CalendarView() {
         <div className="flex justify-center">
           <Calendar 
             mode="single" 
-            selected={date} 
-            onSelect={setDate} 
+            selected={selectedDate} 
+            onSelect={handleDateSelect} 
             className="max-w-full overflow-x-auto rounded-md border" 
           />
         </div>
@@ -91,59 +117,70 @@ export function CalendarView() {
       <Card className="p-4 lg:col-span-2 overflow-hidden">
         <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
           <h3 className="text-lg font-medium">
-            {date?.toLocaleDateString("en-US", {
+            {selectedDate?.toLocaleDateString("en-US", {
               weekday: "long",
               month: "long",
               day: "numeric",
             })}
           </h3>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" onClick={() => changeDate(-1)}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" onClick={() => changeDate(1)}>
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
         </div>
 
-        <div className="space-y-4 overflow-y-auto max-h-[calc(100vh-20rem)]">
-          {appointments.map((appointment) => (
-            <div 
-              key={appointment.id} 
-              className="flex items-center justify-between p-3 rounded-lg border flex-wrap gap-3 sm:flex-nowrap"
-            >
-              <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarImage src={appointment.avatar || "/placeholder.svg"} alt={appointment.patientName} />
-                  <AvatarFallback>{appointment.initials}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium">{appointment.patientName}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {appointment.time} - {appointment.type}
-                  </p>
+        {loading && (
+          <div className="flex items-center justify-center p-4">
+            <Loader2 className="h-6 w-6 animate-spin" />
+          </div>
+        )}
+        {error && (
+          <div className="p-4 text-red-500 text-center">Error: {error}</div>
+        )}
+        {!loading && !error && (
+          <div className="space-y-4">
+            {appointments.length === 0 ? (
+              <p className="text-center text-muted-foreground">No appointments scheduled for this date.</p>
+            ) : (
+              appointments.map((appointment) => (
+                <div key={appointment.id} className="flex items-center justify-between p-3 rounded-lg border">
+                  <div className="flex items-center gap-3">
+                    <Avatar>
+                      <AvatarFallback>{getInitials(appointment.patientName)}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium">{appointment.patientName || "Unknown Patient"}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {appointment.time} - {appointment.type}
+                      </p>
+                      {appointment.notes && <p className="text-xs text-muted-foreground mt-1">Notes: {appointment.notes}</p>}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      className={
+                        appointment.type === "Check-up"
+                          ? "bg-blue-500"
+                          : appointment.type === "Follow-up"
+                            ? "bg-green-500"
+                            : "bg-purple-500"
+                      }
+                    >
+                      {appointment.type}
+                    </Badge>
+                    <Button variant="outline" size="sm">
+                      Details
+                    </Button>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-2 ml-auto">
-                <Badge
-                  className={
-                    appointment.type === "Check-up"
-                      ? "bg-blue-500"
-                      : appointment.type === "Follow-up"
-                        ? "bg-green-500"
-                        : "bg-purple-500"
-                  }
-                >
-                  {appointment.type}
-                </Badge>
-                <Button variant="outline" size="sm">
-                  Details
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
+              ))
+            )}
+          </div>
+        )}
       </Card>
     </div>
   )

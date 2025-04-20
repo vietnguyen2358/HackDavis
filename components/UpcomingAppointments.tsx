@@ -6,50 +6,66 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Calendar, CheckCircle2, Clock, Loader2, FileText } from "lucide-react";
 
+// Interface matching the appointment structure in JSON/API
 interface Appointment {
-  _id: string;
-  patientName: string;
+  id: string; // Changed from _id
+  patientId: string;
+  doctorId: string;
+  patientName?: string;
+  doctorName?: string;
   date: string;
-  type: "Check-up" | "Follow-up" | "Consultation";
   time: string;
-  details?: {
-    notes?: string;
-    createdBy?: string;
-  };
-  status: "pending" | "in_progress" | "completed";
-  progress?: number; // Only for in_progress
+  type: string; // Assuming type is still string
+  status: string; // Assuming status is still string
+  notes?: string;
+  // Removed details structure and progress, adapt if needed
 }
+
+// Get initials for AvatarFallback
+const getInitials = (name?: string) => {
+  return name ? name.split(' ').map(n => n[0]).join('') : '?';
+};
 
 export function UpcomingAppointments() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const response = await fetch("/api/appointments/upcoming");
-        if (!response.ok) {
-          throw new Error("Failed to fetch appointments");
-        }
-        const data = await response.json();
-        // Sort by status: in_progress > pending > completed
-        const sorted = data.sort((a: Appointment, b: Appointment) => {
-          const statusPriority = {
-            in_progress: 0,
-            pending: 1,
-            completed: 2,
-          };
-          return statusPriority[a.status] - statusPriority[b.status];
-        });
-        setAppointments(sorted);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to fetch appointments");
-      } finally {
-        setLoading(false);
+  // Function to fetch appointments
+  const fetchAppointments = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Fetch all appointments from the new endpoint
+      const response = await fetch("/api/appointments");
+      if (!response.ok) {
+        throw new Error("Failed to fetch appointments");
       }
-    };
+      const data = await response.json();
+      // Sorting logic remains the same (assuming status property exists)
+      const sorted = Array.isArray(data) ? data.sort((a: Appointment, b: Appointment) => {
+        const statusPriority = {
+          in_progress: 0, // Keep if these statuses are used
+          pending: 1,
+          completed: 2,
+        };
+        // Provide default priority for unknown statuses
+        const priorityA = statusPriority[a.status as keyof typeof statusPriority] ?? 99;
+        const priorityB = statusPriority[b.status as keyof typeof statusPriority] ?? 99;
+        return priorityA - priorityB;
+      }) : [];
+      setAppointments(sorted);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch appointments");
+       setAppointments([]); // Clear appointments on error
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchAppointments();
+    // Optionally add a listener or interval to refresh data if needed
   }, []);
 
   if (loading) {
@@ -66,55 +82,57 @@ export function UpcomingAppointments() {
 
   return (
     <div className="space-y-4">
-      {appointments.map((appt) => (
-        <div
-          key={appt._id}
-          className="flex items-center justify-between p-4 rounded-lg border"
-        >
-          <div className="flex items-center gap-3">
-            <Avatar>
-              <AvatarImage src="/placeholder.svg" alt={appt.patientName} />
-              <AvatarFallback>
-                <Calendar className="h-4 w-4" />
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="font-medium">{appt.patientName}</p>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="text-xs text-muted-foreground">
-                  {new Date(appt.date).toLocaleDateString()} {appt.time}
-                </span>
-                <Badge variant="outline">{appt.type}</Badge>
-                {appt.status === "in_progress" && (
-                  <Badge variant="secondary">
-                    <Loader2 className="mr-1 h-3 w-3 animate-spin" />In Progress
-                  </Badge>
-                )}
-                {appt.status === "completed" && (
-                  <Badge variant="default">
-                    <CheckCircle2 className="mr-1 h-3 w-3" />Completed
-                  </Badge>
-                )}
-                {appt.status === "pending" && (
-                  <Badge variant="outline">
-                    <Clock className="mr-1 h-3 w-3" />Pending
-                  </Badge>
+      {appointments.length === 0 ? (
+         <p className="text-center text-muted-foreground">No upcoming appointments.</p>
+      ) : (
+        appointments.map((appt) => (
+          <div
+            key={appt.id} // Use id instead of _id
+            className="flex items-center justify-between p-4 rounded-lg border"
+          >
+            <div className="flex items-center gap-3">
+              <Avatar>
+                 {/* Use initials, remove placeholder image */}
+                <AvatarFallback>{getInitials(appt.patientName)}</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="font-medium">{appt.patientName || "Unknown Patient"}</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-xs text-muted-foreground">
+                    {/* Format date if needed, assuming YYYY-MM-DD */}
+                    {appt.date} {appt.time}
+                  </span>
+                  <Badge variant="outline">{appt.type}</Badge>
+                  {/* Update status badge logic based on actual statuses used */}
+                  {appt.status === "in_progress" && (
+                    <Badge variant="secondary">
+                      <Loader2 className="mr-1 h-3 w-3 animate-spin" />In Progress
+                    </Badge>
+                  )}
+                  {appt.status === "completed" && (
+                    <Badge variant="default">
+                      <CheckCircle2 className="mr-1 h-3 w-3" />Completed
+                    </Badge>
+                  )}
+                  {appt.status === "pending" && (
+                    <Badge variant="outline">
+                      <Clock className="mr-1 h-3 w-3" />Pending
+                    </Badge>
+                  )}
+                </div>
+                {/* Use appt.notes directly */}
+                {appt.notes && (
+                  <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                    <FileText className="h-3 w-3" /> {appt.notes}
+                  </div>
                 )}
               </div>
-              {appt.details?.notes && (
-                <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                  <FileText className="h-3 w-3" /> {appt.details.notes}
-                </div>
-              )}
             </div>
+            {/* Remove Progress bar section or adapt if needed */}
+             {/* {appt.status === "in_progress" && (...)} */}
           </div>
-          {appt.status === "in_progress" && (
-            <div className="w-32">
-              <Progress value={appt.progress ?? 0} className="h-2" />
-            </div>
-          )}
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 }
