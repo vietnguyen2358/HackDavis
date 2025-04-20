@@ -94,9 +94,9 @@ export function PatientsList() {
                 <div>
                   <p className="font-medium">{patient.name}</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 mt-1">
-                    <span key="phone" className="text-xs text-muted-foreground">{patient.phone}</span>
-                    <span key="age" className="text-xs text-muted-foreground">{patient.age} years old • {patient.gender}</span>
-                    <div key="appointment" className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <span className="text-xs text-muted-foreground">{patient.phone}</span>
+                    <span className="text-xs text-muted-foreground">{patient.age} years old • {patient.gender}</span>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Calendar className="h-3 w-3" />
                       <span>
                         {patient.appointments?.length > 0 
@@ -104,7 +104,7 @@ export function PatientsList() {
                           : 'No upcoming appointments'}
                       </span>
                     </div>
-                    <Badge key="condition" variant="outline" className="w-fit">
+                    <Badge variant="outline" className="w-fit">
                       {patient.medicalHistory?.conditions?.length > 0 
                         ? patient.medicalHistory.conditions[0]
                         : 'No conditions'}
@@ -112,17 +112,16 @@ export function PatientsList() {
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2">
-                  <Button key="phone-btn" variant="outline" size="icon">
-                    <Phone className="h-4 w-4" />
-                  </Button>
-                  <Button key="message-btn" variant="outline" size="icon">
-                    <MessageSquare className="h-4 w-4" />
-                  </Button>
-                  <Button key="file-btn" variant="outline" size="icon">
-                    <FileText className="h-4 w-4" />
-                  </Button>
+                  {[
+                    { icon: <Phone className="h-4 w-4" />, id: "phone-btn" },
+                    { icon: <MessageSquare className="h-4 w-4" />, id: "message-btn" },
+                    { icon: <FileText className="h-4 w-4" />, id: "file-btn" }
+                  ].map((btn) => (
+                    <Button key={btn.id} variant="outline" size="icon">
+                      {btn.icon}
+                    </Button>
+                  ))}
                   <Button 
-                    key="profile-btn"
                     variant="outline" 
                     size="sm" 
                     className="hidden sm:flex"

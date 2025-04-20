@@ -320,17 +320,17 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem key="checkup" value="checkup">
-                    <span key="checkup-text">Patient Check-up</span>
+                  <SelectItem value="checkup">
+                    Patient Check-up
                   </SelectItem>
-                  <SelectItem key="appointment" value="appointment">
-                    <span key="appointment-text">Schedule Appointment</span>
+                  <SelectItem value="appointment">
+                    Schedule Appointment
                   </SelectItem>
-                  <SelectItem key="reminder" value="reminder">
-                    <span key="reminder-text">Appointment Reminder</span>
+                  <SelectItem value="reminder">
+                    Appointment Reminder
                   </SelectItem>
-                  <SelectItem key="followup" value="followup">
-                    <span key="followup-text">Patient Follow-up</span>
+                  <SelectItem value="followup">
+                    Patient Follow-up
                   </SelectItem>
                 </SelectContent>
               </Select>
