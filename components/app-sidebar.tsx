@@ -66,11 +66,6 @@ export function AppSidebar() {
       path: "/dashboard",
     },
     {
-      title: "Patient Communication",
-      icon: MessageSquare,
-      path: "/communication",
-    },
-    {
       title: "Documentation",
       icon: FileText,
       path: "/documentation",
@@ -142,12 +137,12 @@ export function AppSidebar() {
 
   const sidebarContent = (
     <>
-      <SidebarHeader className="flex flex-col items-start px-4 py-4">
+      <SidebarHeader className="flex flex-col items-start px-4 py-4 bg-gradient-to-b from-primary/5 to-transparent">
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary shadow-sm">
+          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary shadow-lg">
             <span className="text-lg font-bold text-primary-foreground">H</span>
           </div>
-          <span className="text-xl font-bold">HealthAssist AI</span>
+          <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">HealthAssist AI</span>
         </Link>
         <div className="mt-6 w-full">
           <NewJobModal />
@@ -157,7 +152,7 @@ export function AppSidebar() {
       <SidebarSeparator className="my-2" />
 
       <SidebarContent className="px-2">
-        <SidebarMenu>
+        <SidebarMenu className="space-y-2">
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.path}>
               <SidebarMenuButton 
@@ -167,13 +162,23 @@ export function AppSidebar() {
               >
                 <Link 
                   href={item.path} 
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-sidebar-accent group"
+                  className={`flex items-center gap-3 px-4 py-3 rounded-md group relative overflow-hidden ${
+                    isActive(item.path) 
+                      ? 'bg-sidebar-accent' 
+                      : 'hover:bg-sidebar-accent'
+                  }`}
                   onClick={() => isMobile && setOpenMobile(false)}
                 >
-                  <div className={`flex items-center justify-center h-8 w-8 rounded-md ${isActive(item.path) ? 'bg-primary text-primary-foreground' : 'text-sidebar-foreground group-hover:text-primary'}`}>
+                  <div className={`flex items-center justify-center h-9 w-9 rounded-md transition-all duration-200 ${
+                    isActive(item.path) 
+                      ? 'text-primary' 
+                      : 'text-sidebar-foreground group-hover:text-primary'
+                  }`}>
                     <item.icon className="h-5 w-5" />
                   </div>
-                  <span className="font-medium">{item.title}</span>
+                  <span className={`font-medium relative z-10 ${
+                    isActive(item.path) ? 'text-primary' : 'text-sidebar-foreground group-hover:text-primary'
+                  }`}>{item.title}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -183,10 +188,10 @@ export function AppSidebar() {
 
       <SidebarSeparator className="my-2" />
 
-      <SidebarFooter className="p-4 mt-auto">
+      <SidebarFooter className="p-4 mt-auto bg-gradient-to-t from-primary/5 to-transparent">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-3 p-2 rounded-md hover:bg-sidebar-accent transition-colors duration-200">
-            <Avatar className="h-10 w-10 border-2 border-primary/10">
+            <Avatar className="h-10 w-10 border-2 border-primary/20 shadow-md">
               <AvatarImage asChild alt="User">
                 <Image 
                   src="/placeholder.svg" 
@@ -205,10 +210,10 @@ export function AppSidebar() {
           </div>
           
           <div className="flex items-center gap-2 px-2">
-            <Button variant="ghost" size="icon" className="h-8 w-8">
+            <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-primary/10">
               <Settings className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
+            <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-primary/10">
               <LogOut className="h-4 w-4" />
             </Button>
           </div>
@@ -221,7 +226,7 @@ export function AppSidebar() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="absolute bottom-4 right-4 rounded-full bg-sidebar-accent/50 hover:bg-sidebar-accent transition-colors"
+                className="absolute bottom-4 right-4 rounded-full bg-sidebar-accent/50 hover:bg-sidebar-accent transition-colors shadow-md"
                 onClick={() => {
                   if (isMobile) {
                     setOpenMobile(false);
@@ -251,12 +256,14 @@ export function AppSidebar() {
       <Sidebar 
         variant="floating" 
         collapsible={isMobile ? "offcanvas" : isLandingPage ? (sidebarVisible ? "none" : "icon") : "none"} 
-        className={`border-r shadow-md transition-all duration-300 ${
+        className={`border-r shadow-md transition-all duration-300 h-screen ${
           isLandingPage && !sidebarVisible && !isMobile ? 'md:w-0 md:min-w-0 md:p-0 md:m-0 md:border-0 md:opacity-0' : 'md:block'
         }`}
       >
         {isMobile && <SheetTitle className="sr-only">Navigation Menu</SheetTitle>}
-        {sidebarContent}
+        <div className="flex flex-col h-full">
+          {sidebarContent}
+        </div>
       </Sidebar>
     </>
   )
