@@ -22,6 +22,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${getFontVariables()}`} suppressHydrationWarning>
+      <head>
+        {/* Preconnect to domains for faster loading */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
+        {/* Preload critical assets */}
+        <link rel="preload" href="/hero-pattern.svg" as="image" type="image/svg+xml" />
+        
+        {/* Add DNS prefetch for third-party resources */}
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        
+        {/* Add meta viewport for responsive design */}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+      </head>
       <body suppressHydrationWarning className="w-full h-full font-inter">
         <AppStateProvider>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
