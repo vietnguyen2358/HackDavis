@@ -56,5 +56,4 @@ const createCalendarEvent=async (patient)=>{
         return error
     }
 }
-
 export { createCalendarEvent };  // Use export for named export
