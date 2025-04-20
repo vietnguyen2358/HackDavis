@@ -1,43 +1,28 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { getPatientByName, updatePatient } from '../../../backend/api/mongodb/db';
 
-export async function GET(request: Request) {
+export async function POST(req: Request) {
   try {
-    // Read the EHR data
-    const ehrPath = path.join(process.cwd(), 'backend/api/data/ehr.json');
-    const ehrData = JSON.parse(fs.readFileSync(ehrPath, 'utf8'));
+    const { patientName } = await req.json();
 
-    // Get patient ID from query params
-    const { searchParams } = new URL(request.url);
-    const patientId = searchParams.get('patientId');
-
-    if (!patientId) {
-      return NextResponse.json({ error: 'Patient ID is required' }, { status: 400 });
-    }
-
-    // Find the patient
-    const patient = ehrData.patients.find((p: any) => p.id === patientId);
-
+    // Get patient data from MongoDB
+    const patient = await getPatientByName(patientName);
     if (!patient) {
       return NextResponse.json({ error: 'Patient not found' }, { status: 404 });
     }
 
-    // Clean and format the conversation
-    const cleanedConversation = patient.conversation?.map((msg: any) => ({
-      speaker: msg.speaker,
-      message: msg.message,
-      timestamp: msg.timestamp
-    })) || [];
+    // Clear the notes array
+    const updatedPatient = await updatePatient(patient.id, { notes: [] });
+    if (!updatedPatient) {
+      return NextResponse.json({ error: 'Failed to update patient' }, { status: 500 });
+    }
 
-    // Return only the cleaned conversation data
-    return NextResponse.json({
-      patientId: patient.id,
-      patientName: patient.name,
-      conversation: cleanedConversation
-    });
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error reading conversation:', error);
-    return NextResponse.json({ error: 'Failed to read conversation' }, { status: 500 });
+    console.error('Error cleaning conversation:', error);
+    return NextResponse.json(
+      { error: 'Failed to clean conversation' },
+      { status: 500 }
+    );
   }
 } 

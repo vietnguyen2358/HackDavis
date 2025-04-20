@@ -6,6 +6,5 @@ package-lock.json
 .env
 
 # Ignore JSON files
-docs.json
-ehr.json
+
 *.json
