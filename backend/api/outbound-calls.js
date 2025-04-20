@@ -3,6 +3,7 @@ import Twilio from "twilio";
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,8 +14,29 @@ if (!fs.existsSync(transcriptsDir)) {
   fs.mkdirSync(transcriptsDir, { recursive: true });
 }
 
-// Load EHR data
-const ehrData = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'data', 'ehr.json'), 'utf8'));
+// Create a directory for temporary prompts
+const promptsDir = path.join(__dirname, 'data', 'prompts');
+if (!fs.existsSync(promptsDir)) {
+  fs.mkdirSync(promptsDir, { recursive: true });
+}
+
+// In-memory store for temporary session data
+const sessionData = new Map();
+
+// Load EHR data - use the correct path
+const ehrFilePath = path.join(__dirname, 'data', 'ehr.json');
+let ehrData = null;
+
+try {
+  if (fs.existsSync(ehrFilePath)) {
+    ehrData = JSON.parse(fs.readFileSync(ehrFilePath, 'utf8'));
+    console.log('Loaded EHR data from file');
+  } else {
+    console.error('EHR file not found at:', ehrFilePath);
+  }
+} catch (error) {
+  console.error('Error loading EHR data:', error);
+}
 
 export function registerOutboundRoutes(fastify) {
   // Check for required environment variables
@@ -23,12 +45,17 @@ export function registerOutboundRoutes(fastify) {
     ELEVENLABS_AGENT_ID,
     TWILIO_ACCOUNT_SID,
     TWILIO_AUTH_TOKEN,
-    TWILIO_PHONE_NUMBER
+    TWILIO_PHONE_NUMBER,
+    NGROK_URL
   } = process.env;
 
   if (!ELEVENLABS_API_KEY || !ELEVENLABS_AGENT_ID || !TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_PHONE_NUMBER) {
     console.error("Missing required environment variables");
     throw new Error("Missing required environment variables");
+  }
+
+  if (!NGROK_URL) {
+    console.warn("NGROK_URL environment variable is not set. Outbound calls may not work correctly.");
   }
 
   // Initialize Twilio client
@@ -117,19 +144,39 @@ export function registerOutboundRoutes(fastify) {
 
   // Route to initiate outbound calls
   fastify.post("/outbound-call", async (request, reply) => {
-    const { patientId, jobType } = request.body;
+    console.log("[Debug] Received outbound call request:", JSON.stringify(request.body, null, 2));
+    const { patientId, jobType, number } = request.body;
 
     if (!patientId) {
+      console.log("[Debug] Missing patient ID in request");
       return reply.code(400).send({ error: "Patient ID is required" });
     }
 
     try {
       // Find patient in EHR
-      const patient = ehrData.patients.find(p => p.id === patientId);
+      console.log("[Debug] Looking for patient in EHR data, patientId:", patientId);
+      console.log("[Debug] EHR data available:", !!ehrData);
+      if (ehrData) {
+        console.log("[Debug] EHR patients count:", ehrData.patients?.length || 0);
+      }
+      
+      const patient = ehrData?.patients?.find(p => p.id === patientId);
       if (!patient) {
+        console.log("[Debug] Patient not found in EHR data");
         return reply.code(404).send({ error: "Patient not found" });
       }
+      
+      console.log("[Debug] Found patient in EHR:", patient.name);
 
+      // Use phone number from request if available, otherwise from patient data
+      const phoneNumber = number || patient.phone;
+      
+      if (!phoneNumber) {
+        return reply.code(400).send({ error: "Phone number is required" });
+      }
+
+      console.log("[Debug] Using phone number:", phoneNumber);
+      
       // Get the system prompt
       const systemPrompt = ehrData.systemPrompt;
 
@@ -181,46 +228,125 @@ export function registerOutboundRoutes(fastify) {
       customPrompt += `First Message: ${systemPrompt.firstMessage}\n`;
 
       console.log("[Debug] Initiating call with prompt:", customPrompt);
+      console.log("[Debug] Host header:", request.headers.host);
+      console.log("[Debug] Request protocol:", request.protocol);
+      
+      // Hardcode ngrok URL since .env isn't loading correctly
+      const ngrokUrl = "https://4c14-128-120-27-122.ngrok-free.app";
 
-      const call = await twilioClient.calls.create({
-        from: TWILIO_PHONE_NUMBER,
-        to: patient.phone,
-        url: `https://${request.headers.host}/outbound-call-twiml?prompt=${encodeURIComponent(customPrompt)}&patient=${encodeURIComponent(JSON.stringify(patient))}`
+      // Create a unique session ID for this call
+      const sessionId = crypto.randomUUID();
+      
+      // Store the prompt and patient data in session
+      sessionData.set(sessionId, {
+        prompt: customPrompt,
+        patient: patient,
+        timestamp: Date.now()
       });
+      
+      // Also save to a file as backup
+      fs.writeFileSync(
+        path.join(promptsDir, `${sessionId}.json`), 
+        JSON.stringify({ prompt: customPrompt, patient })
+      );
+      
+      console.log("[Debug] Created session:", sessionId);
 
-      reply.send({ 
-        success: true, 
-        message: "Call initiated", 
-        callSid: call.sid,
-        patient: {
-          id: patient.id,
-          name: patient.name,
-          phone: patient.phone
-        },
-        prompt: customPrompt
-      });
+      // Use ngrok URL if available, otherwise fallback to request host
+      const baseUrl = ngrokUrl || `https://${request.headers.host}`;
+      // Use a much shorter URL with just the session ID
+      const twimlUrl = `${baseUrl}/outbound-call-twiml?sessionId=${sessionId}`;
+      console.log("[Debug] TwiML URL:", twimlUrl);
+
+      try {
+        const call = await twilioClient.calls.create({
+          from: TWILIO_PHONE_NUMBER,
+          to: phoneNumber,
+          url: twimlUrl
+        });
+        
+        console.log("[Debug] Twilio call created:", call.sid);
+
+        reply.send({ 
+          success: true, 
+          message: "Call initiated", 
+          callSid: call.sid,
+          patient: {
+            id: patient.id,
+            name: patient.name,
+            phone: patient.phone
+          },
+          prompt: customPrompt
+        });
+      } catch (error) {
+        console.error("Error initiating outbound call:", error);
+        // Log detailed error information
+        if (error.message) console.error("Error message:", error.message);
+        if (error.code) console.error("Error code:", error.code);
+        if (error.stack) console.error("Error stack:", error.stack);
+        
+        reply.code(500).send({ 
+          success: false, 
+          error: "Failed to initiate call",
+          details: error.message 
+        });
+      }
     } catch (error) {
       console.error("Error initiating outbound call:", error);
+      // Log detailed error information
+      if (error.message) console.error("Error message:", error.message);
+      if (error.code) console.error("Error code:", error.code);
+      if (error.stack) console.error("Error stack:", error.stack);
+      
       reply.code(500).send({ 
         success: false, 
-        error: "Failed to initiate call" 
+        error: "Failed to initiate call",
+        details: error.message 
       });
     }
   });
 
   // TwiML route for outbound calls
   fastify.all("/outbound-call-twiml", async (request, reply) => {
-    const prompt = request.query.prompt || '';
-    const patient = request.query.patient ? JSON.parse(decodeURIComponent(request.query.patient)) : null;
+    // Get the session ID from the query params
+    const sessionId = request.query.sessionId;
+    let prompt = '';
+    let patient = null;
+    
+    if (sessionId) {
+      // Try to get data from in-memory session first
+      const session = sessionData.get(sessionId);
+      if (session) {
+        prompt = session.prompt;
+        patient = session.patient;
+        console.log(`[Debug] Found session ${sessionId} in memory`);
+      } else {
+        // Fall back to file if not in memory
+        try {
+          const sessionFile = path.join(promptsDir, `${sessionId}.json`);
+          if (fs.existsSync(sessionFile)) {
+            const data = JSON.parse(fs.readFileSync(sessionFile, 'utf8'));
+            prompt = data.prompt;
+            patient = data.patient;
+            console.log(`[Debug] Loaded session ${sessionId} from file`);
+          }
+        } catch (error) {
+          console.error(`[Debug] Error loading session ${sessionId} from file:`, error);
+        }
+      }
+    } else {
+      // For backward compatibility
+      prompt = request.query.prompt || '';
+      patient = request.query.patient ? JSON.parse(decodeURIComponent(request.query.patient)) : null;
+    }
+    
     const systemPrompt = ehrData.systemPrompt;
 
     const twimlResponse = `<?xml version="1.0" encoding="UTF-8"?>
       <Response>
         <Connect>
           <Stream url="wss://${request.headers.host}/outbound-media-stream">
-            <Parameter name="prompt" value="${prompt}" />
-            <Parameter name="patient" value="${encodeURIComponent(JSON.stringify(patient))}" />
-            <Parameter name="systemPrompt" value="${encodeURIComponent(JSON.stringify(systemPrompt))}" />
+            <Parameter name="sessionId" value="${sessionId || ''}" />
           </Stream>
         </Connect>
       </Response>`;
@@ -241,6 +367,7 @@ export function registerOutboundRoutes(fastify) {
       let currentPrompt = null;  // Add this to store the prompt
       let systemPromptData = null;  // Add this to store the system prompt
       let patientId = null;  // Add this to store patient ID
+      let sessionId = null;  // Add this to store the session ID
 
       // Handle WebSocket errors
       ws.on('error', console.error);
@@ -371,19 +498,55 @@ export function registerOutboundRoutes(fastify) {
               streamSid = msg.start.streamSid;
               callSid = msg.start.callSid;
               customParameters = msg.start.customParameters;
-              currentPrompt = customParameters?.prompt;  // Store the prompt
               
-              // Extract patient ID from parameters
-              if (customParameters?.patient) {
-                try {
-                  const patientData = JSON.parse(decodeURIComponent(customParameters.patient));
-                  patientId = patientData.id;
-                  console.log(`Starting call with patient ID: ${patientId}`);
+              // Get the session ID from parameters
+              sessionId = customParameters?.sessionId;
+              
+              if (sessionId) {
+                console.log(`[Debug] Got session ID: ${sessionId}`);
+                
+                // Load prompt and patient data from session
+                const session = sessionData.get(sessionId);
+                if (session) {
+                  currentPrompt = session.prompt;
+                  patientId = session.patient.id;
+                  console.log(`[Debug] Loaded session from memory: ${sessionId}`);
                   
                   // Reset transcript when a new call starts
                   resetTranscript(patientId);
-                } catch (e) {
-                  console.error("Error parsing patient data:", e);
+                } else {
+                  // Try to load from file
+                  try {
+                    const sessionFile = path.join(promptsDir, `${sessionId}.json`);
+                    if (fs.existsSync(sessionFile)) {
+                      const data = JSON.parse(fs.readFileSync(sessionFile, 'utf8'));
+                      currentPrompt = data.prompt;
+                      patientId = data.patient.id;
+                      console.log(`[Debug] Loaded session from file: ${sessionId}`);
+                      
+                      // Reset transcript when a new call starts
+                      resetTranscript(patientId);
+                    }
+                  } catch (error) {
+                    console.error(`[Debug] Error loading session from file: ${error}`);
+                  }
+                }
+              } else {
+                // For backward compatibility
+                currentPrompt = customParameters?.prompt;  // Store the prompt
+              
+                // Extract patient ID from parameters
+                if (customParameters?.patient) {
+                  try {
+                    const patientData = JSON.parse(decodeURIComponent(customParameters.patient));
+                    patientId = patientData.id;
+                    console.log(`Starting call with patient ID: ${patientId}`);
+                    
+                    // Reset transcript when a new call starts
+                    resetTranscript(patientId);
+                  } catch (e) {
+                    console.error("Error parsing patient data:", e);
+                  }
                 }
               }
               

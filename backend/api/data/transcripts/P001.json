@@ -2,36 +2,6 @@
   {
     "type": "system",
     "content": "Call started",
-    "timestamp": "2025-04-19T22:31:17.085Z"
-  },
-  {
-    "type": "ai",
-    "raw": {
-      "agent_response_event": {
-        "agent_response": "Hello! This is MediConnect AI calling from HealthAssist. I'm reaching out regarding your upcoming healthcare appointment. Is this a good time to talk for a moment?"
-      },
-      "type": "agent_response"
-    },
-    "timestamp": "2025-04-19T22:31:18.153Z"
-  },
-  {
-    "type": "user",
-    "raw": {
-      "user_transcription_event": {
-        "user_transcript": "Can you hear me? Testing 1, 2, 3."
-      },
-      "type": "user_transcript"
-    },
-    "timestamp": "2025-04-19T22:31:26.269Z"
-  },
-  {
-    "type": "ai",
-    "raw": {
-      "agent_response_event": {
-        "agent_response": "Yes, I can hear you. How can I help you today?\n"
-      },
-      "type": "agent_response"
-    },
-    "timestamp": "2025-04-19T22:31:26.334Z"
+    "timestamp": "2025-04-20T06:39:22.896Z"
   }
 ]

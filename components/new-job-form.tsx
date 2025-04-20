@@ -127,11 +127,55 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
       const job = await jobResponse.json()
       
       // Format the data for the outbound call
-      const jobData = {
+      const jobData: {
+        patientId: string;
+        patientName: string;
+        jobType: string;
+        additionalNotes: string;
+        jobId: string;
+        timestamp: string;
+        status: string;
+        patientDetails?: any;
+      } = {
         patientId: selectedPatient.id,
+        patientName: values.personName,
         jobType: values.jobType,
         additionalNotes: detailedNotes,
-        jobId: job.id // Pass the job ID to update progress
+        jobId: job.id,
+        timestamp: new Date().toISOString(),
+        status: 'pending'
+      }
+      
+      // Fetch EHR data directly from the file
+      let ehrData = null;
+      let patientPhone = null;
+      try {
+        const ehrResponse = await fetch('/api/ehr-data');
+        if (ehrResponse.ok) {
+          ehrData = await ehrResponse.json();
+          console.log('Fetched EHR data:', ehrData);
+          
+          // Find the patient in the EHR data
+          const ehrPatient = ehrData.patients.find((p: any) => p.id === selectedPatient.id);
+          if (ehrPatient) {
+            console.log('Found patient in EHR data:', ehrPatient);
+            // Add patient details from EHR to the job data
+            jobData.patientDetails = {
+              phone: ehrPatient.phone,
+              age: ehrPatient.age,
+              gender: ehrPatient.gender,
+              medicalHistory: ehrPatient.medicalHistory,
+              preferences: ehrPatient.preferences
+            };
+            patientPhone = ehrPatient.phone;
+          } else {
+            console.warn('Patient not found in EHR data');
+          }
+        } else {
+          console.error('Failed to fetch EHR data:', await ehrResponse.text());
+        }
+      } catch (error) {
+        console.error('Error fetching EHR data:', error);
       }
       
       // Use the ngrok URL from environment variable
@@ -145,6 +189,9 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
       const apiUrl = `${baseUrl}/outbound-call`
       
       // Use our own API as a proxy to avoid CORS issues
+      console.log('Making outbound call request to:', apiUrl)
+      console.log('With data including patient phone:', patientPhone)
+      
       const response = await fetch('/api/proxy-outbound-call', {
         method: 'POST',
         headers: {
@@ -152,7 +199,11 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
         },
         body: JSON.stringify({
           targetUrl: apiUrl,
-          data: jobData
+          data: {
+            ...jobData,
+            number: patientPhone // Add the phone number to the request
+          },
+          ehrData: ehrData // Pass EHR data separately
         }),
       })
 
@@ -308,7 +359,7 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
         />
 
         <div className="flex justify-end gap-4">
-          <DialogClose>
+          <DialogClose asChild>
             <Button type="button" variant="outline">Cancel</Button>
           </DialogClose>
           <Button type="submit" disabled={isSubmitting}>
