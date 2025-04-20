@@ -161,6 +161,30 @@
       "type": "Consultation",
       "status": "pending",
       "notes": "Review imaging"
+    },
+    {
+      "patientId": "P001",
+      "doctorId": "D001",
+      "date": "2025-04-20",
+      "time": "11:00",
+      "type": "Follow-up",
+      "notes": "Follow-up appointment to discuss recent cancer imaging results (negative)",
+      "status": "pending",
+      "id": "e722783b-783b-4854-b012-a1df2dff9cd8",
+      "patientName": "John Smith",
+      "doctorName": "Dr. Bruce Wayne"
+    },
+    {
+      "patientId": "P001",
+      "doctorId": "D002",
+      "date": "2024-04-28",
+      "time": "12:00",
+      "type": "Check-up",
+      "status": "pending",
+      "notes": "Regular check-up appointment",
+      "id": "c5c30bcc-68d9-4a67-9a2f-08942a4eb5fc",
+      "patientName": "John Smith",
+      "doctorName": "Dr. Stephen Strange"
     }
   ]
 }

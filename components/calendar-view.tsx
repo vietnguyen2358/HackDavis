@@ -1,12 +1,15 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Calendar } from "@/components/ui/calendar"
-import { Card } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
+import { ChevronLeft, ChevronRight, Loader2, Calendar as CalendarIcon } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+import { format } from "date-fns"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 // Interface matching the appointment structure in JSON/API
 interface Appointment {
@@ -28,160 +31,180 @@ const formatDate = (date: Date): string => {
 };
 
 export function CalendarView() {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Set the initial date on the client side to avoid hydration mismatches
+  useEffect(() => {
+    setSelectedDate(new Date())
+  }, [])
+
   // Fetch appointments when selectedDate changes
   useEffect(() => {
-    if (!selectedDate) return
-
+    if (!selectedDate) return;
+    
     const fetchAppointments = async () => {
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
       try {
-        const dateString = formatDate(selectedDate)
-        // Fetch appointments for the selected date
-        const response = await fetch(`/api/appointments?date=${dateString}`)
+        const response = await fetch(`/api/appointments?date=${formatDate(selectedDate)}`);
         if (!response.ok) {
-          throw new Error("Failed to fetch appointments for the selected date")
+          throw new Error('Failed to fetch appointments');
         }
-        const data = await response.json()
-        setAppointments(Array.isArray(data) ? data : [])
+        const data = await response.json();
+        setAppointments(data.appointments || []);
       } catch (err) {
-        console.error("Error fetching appointments:", err)
-        setError(err instanceof Error ? err.message : "Failed to load appointments")
-        setAppointments([])
+        console.error('Error fetching appointments:', err);
+        setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchAppointments()
-  }, [selectedDate]) // Re-fetch when selectedDate changes
+    fetchAppointments();
+  }, [selectedDate]);
 
-  // Function to handle date selection from the calendar
   const handleDateSelect = (date: Date | undefined) => {
-    setSelectedDate(date)
-  }
+    setSelectedDate(date);
+  };
 
-  // Function to change date using buttons
   const changeDate = (days: number) => {
-    setSelectedDate(prevDate => {
-      if (!prevDate) return new Date()
-      const newDate = new Date(prevDate)
-      newDate.setDate(newDate.getDate() + days)
-      return newDate
-    })
-  }
+    if (!selectedDate) return;
+    const newDate = new Date(selectedDate);
+    newDate.setDate(newDate.getDate() + days);
+    setSelectedDate(newDate);
+  };
 
-  // Get initials for AvatarFallback
-  const getInitials = (name?: string) => {
-    return name ? name.split(' ').map(n => n[0]).join('') : '?'
-  }
+  // Function to navigate to a specific date
+  const goToDate = (date: Date | undefined) => {
+    if (date) {
+      setSelectedDate(date);
+    }
+  };
+
+  // Function to navigate to today
+  const goToToday = () => {
+    setSelectedDate(new Date());
+  };
+
+  // Function to navigate to April 28, 2024
+  const goToApril28 = () => {
+    const april28 = new Date(2024, 3, 28); // Month is 0-indexed, so 3 = April
+    setSelectedDate(april28);
+  };
+
+  // Memoize the initials function to prevent unnecessary recalculations
+  const getInitials = useMemo(() => (name?: string) => {
+    if (!name) return '??';
+    return name.split(' ').map(n => n[0]).join('');
+  }, []);
+
+  // Memoize the filtered appointments to prevent unnecessary recalculations
+  const filteredAppointments = useMemo(() => {
+    if (!selectedDate) return [];
+    return appointments.filter(appt => appt.date === formatDate(selectedDate));
+  }, [appointments, selectedDate]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
-      {/* Calendar Card - make it full width on smaller screens */}
-      <Card className="p-4 lg:col-span-1 overflow-hidden">
-        <div className="flex justify-center">
-          <Calendar 
-            mode="single" 
-            selected={selectedDate} 
-            onSelect={handleDateSelect} 
-            className="max-w-full overflow-x-auto rounded-md border" 
+    <Card className="w-full">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">
+          Calendar
+        </CardTitle>
+        <div className="flex items-center space-x-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={goToToday}
+            className="text-xs"
+          >
+            Today
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={goToApril28}
+            className="text-xs"
+          >
+            Apr 28, 2024
+          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="sm" className="text-xs">
+                <CalendarIcon className="mr-1 h-3 w-3" />
+                Jump to Date
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="end">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={goToDate}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+          <button 
+            onClick={() => changeDate(-1)}
+            className="text-xs text-muted-foreground hover:text-foreground"
+          >
+            Previous
+          </button>
+          <button 
+            onClick={() => changeDate(1)}
+            className="text-xs text-muted-foreground hover:text-foreground"
+          >
+            Next
+          </button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-4 md:grid-cols-2">
+          <Calendar
+            mode="single"
+            selected={selectedDate}
+            onSelect={handleDateSelect}
+            className="rounded-md border"
           />
-        </div>
-
-        <div className="mt-4">
-          <h3 className="text-sm font-medium mb-2">Appointment Legend</h3>
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-              <span className="text-sm">Check-up</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              <span className="text-sm">Follow-up</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-              <span className="text-sm">Consultation</span>
-            </div>
-          </div>
-        </div>
-      </Card>
-
-      {/* Appointments Card */}
-      <Card className="p-4 lg:col-span-2 overflow-hidden">
-        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-          <h3 className="text-lg font-medium">
-            {selectedDate?.toLocaleDateString("en-US", {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-            })}
-          </h3>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" onClick={() => changeDate(-1)}>
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="icon" onClick={() => changeDate(1)}>
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-
-        {loading && (
-          <div className="flex items-center justify-center p-4">
-            <Loader2 className="h-6 w-6 animate-spin" />
-          </div>
-        )}
-        {error && (
-          <div className="p-4 text-red-500 text-center">Error: {error}</div>
-        )}
-        {!loading && !error && (
           <div className="space-y-4">
-            {appointments.length === 0 ? (
-              <p className="text-center text-muted-foreground">No appointments scheduled for this date.</p>
+            <h3 className="text-sm font-medium">
+              {selectedDate ? format(selectedDate, 'MMMM d, yyyy') : 'Select a date'}
+            </h3>
+            {loading ? (
+              <div className="space-y-2">
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+              </div>
+            ) : error ? (
+              <div className="text-sm text-red-500">{error}</div>
+            ) : filteredAppointments.length === 0 ? (
+              <div className="text-sm text-muted-foreground">No appointments scheduled for this date.</div>
             ) : (
-              appointments.map((appointment) => (
-                <div key={appointment.id} className="flex items-center justify-between p-3 rounded-lg border">
-                  <div className="flex items-center gap-3">
-                    <Avatar>
-                      <AvatarFallback>{getInitials(appointment.patientName)}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-medium">{appointment.patientName || "Unknown Patient"}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {appointment.time} - {appointment.type}
-                      </p>
-                      {appointment.notes && <p className="text-xs text-muted-foreground mt-1">Notes: {appointment.notes}</p>}
+              <div className="space-y-2">
+                {filteredAppointments.map((appt) => (
+                  <div key={appt.id} className="flex items-center justify-between rounded-md border p-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-medium">
+                        {getInitials(appt.patientName)}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">{appt.patientName}</p>
+                        <p className="text-xs text-muted-foreground">{appt.time} - {appt.type}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Badge
-                      className={
-                        appointment.type === "Check-up"
-                          ? "bg-blue-500"
-                          : appointment.type === "Follow-up"
-                            ? "bg-green-500"
-                            : "bg-purple-500"
-                      }
-                    >
-                      {appointment.type}
+                    <Badge variant={appt.status === 'completed' ? 'default' : 'outline'}>
+                      {appt.status}
                     </Badge>
-                    <Button variant="outline" size="sm">
-                      Details
-                    </Button>
                   </div>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </div>
-        )}
-      </Card>
-    </div>
-  )
+        </div>
+      </CardContent>
+    </Card>
+  );
 }

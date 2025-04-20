@@ -36,6 +36,11 @@ interface CalendarData {
 
 const dataFilePath = path.join(process.cwd(), 'data', 'calendar-data.json');
 
+// Cache for appointments data
+let appointmentsCache: Appointment[] | null = null;
+let lastFetchTime = 0;
+const CACHE_DURATION = 30 * 1000; // 30 seconds cache
+
 // Helper function to read data (consider moving to a shared utils file)
 async function readData(): Promise<CalendarData> {
   try {
@@ -58,6 +63,68 @@ async function writeData(data: CalendarData): Promise<void> {
   } catch (error) {
     console.error('Error writing data file:', error);
     throw new Error('Failed to write calendar data');
+  }
+}
+
+// GET handler to fetch appointments with filtering and pagination
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const date = searchParams.get('date');
+    const patientId = searchParams.get('patientId');
+    const doctorId = searchParams.get('doctorId');
+    const status = searchParams.get('status');
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
+    
+    // Check if we have cached data that's still valid
+    const now = Date.now();
+    if (appointmentsCache && (now - lastFetchTime < CACHE_DURATION)) {
+      console.log('Using cached appointments data');
+    } else {
+      // If no cache or cache expired, fetch fresh data
+      console.log('Fetching fresh appointments data');
+      const data = await readData();
+      appointmentsCache = data.appointments;
+      lastFetchTime = now;
+    }
+    
+    // Apply filters
+    let filteredAppointments = [...(appointmentsCache || [])];
+    
+    if (date) {
+      filteredAppointments = filteredAppointments.filter(appt => appt.date === date);
+    }
+    
+    if (patientId) {
+      filteredAppointments = filteredAppointments.filter(appt => appt.patientId === patientId);
+    }
+    
+    if (doctorId) {
+      filteredAppointments = filteredAppointments.filter(appt => appt.doctorId === doctorId);
+    }
+    
+    if (status) {
+      filteredAppointments = filteredAppointments.filter(appt => appt.status === status);
+    }
+    
+    // Apply pagination
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedAppointments = filteredAppointments.slice(startIndex, endIndex);
+    
+    return NextResponse.json({
+      appointments: paginatedAppointments,
+      pagination: {
+        total: filteredAppointments.length,
+        page,
+        limit,
+        totalPages: Math.ceil(filteredAppointments.length / limit)
+      }
+    });
+  } catch (error) {
+    console.error('Error in GET /api/appointments:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -87,6 +154,9 @@ export async function POST(request: Request) {
 
     currentData.appointments.push(newAppointment);
     await writeData(currentData);
+    
+    // Invalidate cache
+    appointmentsCache = null;
 
     return NextResponse.json(newAppointment, { status: 201 }); // Return the created appointment
 
@@ -95,35 +165,6 @@ export async function POST(request: Request) {
     if (error instanceof SyntaxError) {
       return NextResponse.json({ message: 'Invalid JSON payload' }, { status: 400 });
     }
-    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
-  }
-}
-
-// GET handler to retrieve appointments (optional, but useful)
-export async function GET(request: Request) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const date = searchParams.get('date'); // Example: allow filtering by date
-
-    const data = await readData();
-    let appointments = data.appointments;
-
-    if (date) {
-      appointments = appointments.filter(app => app.date === date);
-    }
-
-    // Sort by status: in_progress > pending > completed (Example)
-    const statusPriority = {
-      in_progress: 0,
-      pending: 1,
-      completed: 2,
-    };
-    appointments.sort((a, b) => (statusPriority[a.status as keyof typeof statusPriority] ?? 99) - (statusPriority[b.status as keyof typeof statusPriority] ?? 99));
-
-
-    return NextResponse.json(appointments);
-  } catch (error) {
-    console.error('Error in GET /api/appointments:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 } 

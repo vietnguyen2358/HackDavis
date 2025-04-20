@@ -21,10 +21,10 @@
       },
       "appointments": [
         {
-          "type": "Annual Physical",
-          "date": "2024-03-20",
+          "type": "Follow-up",
+          "date": "2025-04-20",
           "status": "scheduled",
-          "notes": "Follow up on blood pressure medication"
+          "notes": "Follow-up appointment to discuss recent cancer imaging results (negative)"
         }
       ],
       "preferences": {
@@ -116,6 +116,12 @@
           "content": "testing 1 2 3 this is a mic test testing of symbol of your testing 1 2 3 is on my test I'm going to prescribe penicillin to Viet my name is m i z a n and I think Vietnamese antibiotics as well as he's experiencing dizziness and some nausea",
           "timestamp": "2025-04-20T08:44:45.214Z",
           "author": "AI Agent"
+        },
+        {
+          "id": 1745136141941,
+          "content": "Cancer imaging results received - Negative. Follow-up appointment scheduled for April 20, 2025 to discuss results.",
+          "timestamp": "2025-04-19T08:02:21.940Z",
+          "author": "Dr. Bruce Wayne"
         }
       ]
     },
