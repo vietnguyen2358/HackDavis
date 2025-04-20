@@ -13,6 +13,28 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 
+// Define interfaces matching the API structure
+interface Patient {
+  id: string;
+  name: string;
+}
+interface Doctor {
+  id: string;
+  name: string;
+}
+interface Appointment {
+  id: string;
+  patientId: string;
+  doctorId: string;
+  patientName?: string;
+  doctorName?: string;
+  date: string;
+  time: string;
+  type: string;
+  status: string;
+  notes?: string;
+}
+
 const formSchema = z.object({
   patientId: z.string().min(1, { message: "Patient is required." }),
   date: z.string().min(1, { message: "Date is required." }),
@@ -25,33 +47,41 @@ const formSchema = z.object({
 
 interface NewUpcomingAppointmentFormProps {
   onSuccess?: () => void;
+  onAppointmentCreated?: () => void;
 }
 
-export function NewUpcomingAppointmentForm({ onSuccess }: NewUpcomingAppointmentFormProps) {
+export function NewUpcomingAppointmentForm({ onSuccess, onAppointmentCreated }: NewUpcomingAppointmentFormProps) {
   const { toast } = useToast()
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [patients, setPatients] = useState<{ id: string, name: string }[]>([])
-  const [doctors, setDoctors] = useState<{ id: string, name: string }[]>([])
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
+  const [errorData, setErrorData] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchDropdownData() {
+    async function fetchInitialData() {
+      setLoadingData(true);
+      setErrorData(null);
       try {
-        const [patientsRes, doctorsRes] = await Promise.all([
-          fetch("/patients"),
-          fetch("/doctors")
-        ]);
-        const patientsData = await patientsRes.json();
-        const doctorsData = await doctorsRes.json();
-        setPatients(Array.isArray(patientsData) ? patientsData : []);
-        setDoctors(Array.isArray(doctorsData) ? doctorsData : []);
+        const response = await fetch("/api/calendar-data");
+        if (!response.ok) {
+          throw new Error("Failed to fetch calendar data");
+        }
+        const data = await response.json();
+        setPatients(data.patients || []);
+        setDoctors(data.doctors || []);
       } catch (err) {
+        console.error("Error fetching initial data:", err);
+        setErrorData(err instanceof Error ? err.message : "Failed to load data");
         setPatients([]);
         setDoctors([]);
+      } finally {
+        setLoadingData(false);
       }
     }
-    fetchDropdownData();
-  }, [])
+    fetchInitialData();
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -69,32 +99,46 @@ export function NewUpcomingAppointmentForm({ onSuccess }: NewUpcomingAppointment
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true)
     try {
-      // Find selected patient and doctor names for display or backend
-      const selectedPatient = patients.find(p => p.id === values.patientId)
-      const selectedDoctor = doctors.find(d => d.id === values.doctorId)
-      const response = await fetch("/api/google-calander/make-appointment", {
+      const response = await fetch("/api/appointments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...values,
-          patientName: selectedPatient ? selectedPatient.name : undefined,
-          doctor: selectedDoctor ? selectedDoctor.name : undefined,
-          details: { notes: values.notes },
-          status: "pending",
+          patientId: values.patientId,
+          doctorId: values.doctorId,
+          date: values.date,
+          time: values.time,
+          type: values.type,
+          notes: values.notes,
         }),
       })
+
       if (!response.ok) {
-        throw new Error("Failed to create appointment")
+        const errorData = await response.json().catch(() => ({ message: 'Failed to create appointment' }));
+        throw new Error(errorData.message || "Failed to create appointment");
       }
+
+      const createdAppointment = await response.json();
+      console.log("Appointment created:", createdAppointment);
+
       toast({ title: "Appointment created!" })
       form.reset()
       if (onSuccess) onSuccess()
+      if (onAppointmentCreated) onAppointmentCreated();
       router.refresh()
+
     } catch (error) {
+      console.error("Error submitting appointment:", error);
       toast({ title: "Error", description: (error as Error).message, variant: "destructive" })
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  if (loadingData) {
+    return <div className="p-4 text-center">Loading form data...</div>;
+  }
+  if (errorData) {
+    return <div className="p-4 text-center text-red-500">Error loading form data: {errorData}</div>;
   }
 
   return (
@@ -107,13 +151,13 @@ export function NewUpcomingAppointmentForm({ onSuccess }: NewUpcomingAppointment
             <FormItem>
               <FormLabel>Patient</FormLabel>
               <FormControl>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select onValueChange={field.onChange} value={field.value} disabled={patients.length === 0}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select patient" />
                   </SelectTrigger>
                   <SelectContent>
-                    {patients.filter(patient => patient.id && patient.name).map((patient) => (
-                      <SelectItem key={patient.id} value={patient.id}>{patient.name}</SelectItem>
+                    {patients.map((patient) => (
+                        <SelectItem key={patient.id} value={patient.id}>{patient.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -155,12 +199,12 @@ export function NewUpcomingAppointmentForm({ onSuccess }: NewUpcomingAppointment
             <FormItem>
               <FormLabel>Doctor</FormLabel>
               <FormControl>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select onValueChange={field.onChange} value={field.value} disabled={doctors.length === 0}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select doctor" />
                   </SelectTrigger>
                   <SelectContent>
-                    {doctors.filter(doctor => doctor.id && doctor.name).map((doctor) => (
+                    {doctors.map((doctor) => (
                       <SelectItem key={doctor.id} value={doctor.id}>{doctor.name}</SelectItem>
                     ))}
                   </SelectContent>
@@ -218,7 +262,7 @@ export function NewUpcomingAppointmentForm({ onSuccess }: NewUpcomingAppointment
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting || loadingData}>
           {isSubmitting ? "Submitting..." : "Create Appointment"}
         </Button>
       </form>

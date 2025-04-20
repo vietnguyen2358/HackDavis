@@ -176,6 +176,34 @@ fastify.get('/appointment/get-patients-appointments-details/:id', async (request
   }
 });
 
+// Mock doctors data
+const mockDoctors = [
+  { id: "1", name: "Dr. Bruce Wayne", specialty: "Oncology", referralRequired: true },
+  { id: "2", name: "Dr. Stephen Strange", specialty: "Neurology", referralRequired: true },
+  { id: "3", name: "Dr. Meredith Grey", specialty: "General Surgery", referralRequired: false },
+  { id: "4", name: "Dr. Gregory House", specialty: "Diagnostics", referralRequired: true },
+  { id: "5", name: "Dr. Lisa Cuddy", specialty: "Endocrinology", referralRequired: false },
+  { id: "6", name: "Dr. Cristina Yang", specialty: "Cardiothoracic Surgery", referralRequired: true },
+  { id: "7", name: "Dr. Miranda Bailey", specialty: "General Surgery", referralRequired: false },
+  { id: "8", name: "Dr. Derek Shepherd", specialty: "Neurosurgery", referralRequired: true },
+  { id: "9", name: "Dr. Jean Watson", specialty: "Family Medicine", referralRequired: false },
+  { id: "10", name: "Dr. Leonard McCoy", specialty: "Internal Medicine", referralRequired: false }
+];
+
+// Add /doctors endpoint
+fastify.get('/doctors', async (request, reply) => {
+  try {
+    // For now, return mock data
+    reply.send(mockDoctors);
+  } catch (err) {
+    console.log('Error getting doctors:', err);
+    reply.code(500).send({ 
+      error: 'Error getting doctors list',
+      details: err.message
+    });
+  }
+});
+
 console.log('Finished registering /appointment routes.');
 
 // Start the Fastify server

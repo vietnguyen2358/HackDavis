@@ -1,0 +1,166 @@
+{
+  "patients": [
+    {
+      "id": "P001",
+      "name": "John Smith"
+    },
+    {
+      "id": "P002",
+      "name": "Jane Doe"
+    },
+    {
+      "id": "P003",
+      "name": "Bob Wilson"
+    },
+    {
+      "id": "P004",
+      "name": "Alice Green"
+    },
+    {
+      "id": "P005",
+      "name": "Charlie Brown"
+    }
+  ],
+  "doctors": [
+    {
+      "id": "D001",
+      "name": "Dr. Bruce Wayne",
+      "specialty": "Oncology"
+    },
+    {
+      "id": "D002",
+      "name": "Dr. Stephen Strange",
+      "specialty": "Neurology"
+    },
+    {
+      "id": "D003",
+      "name": "Dr. Meredith Grey",
+      "specialty": "General Surgery"
+    },
+    {
+      "id": "D004",
+      "name": "Dr. Gregory House",
+      "specialty": "Diagnostics"
+    },
+    {
+      "id": "D005",
+      "name": "Dr. Lisa Cuddy",
+      "specialty": "Endocrinology"
+    },
+    {
+      "id": "D006",
+      "name": "Dr. Cristina Yang",
+      "specialty": "Cardiothoracic Surgery"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "A001",
+      "patientId": "P001",
+      "doctorId": "D003",
+      "patientName": "John Smith",
+      "doctorName": "Dr. Meredith Grey",
+      "date": "2024-07-28",
+      "time": "10:00",
+      "type": "Check-up",
+      "status": "completed",
+      "notes": "Annual physical"
+    },
+    {
+      "id": "A002",
+      "patientId": "P002",
+      "doctorId": "D004",
+      "patientName": "Jane Doe",
+      "doctorName": "Dr. Gregory House",
+      "date": "2024-07-28",
+      "time": "11:30",
+      "type": "Consultation",
+      "status": "completed",
+      "notes": "Discuss test results"
+    },
+    {
+      "id": "A003",
+      "patientId": "P003",
+      "doctorId": "D001",
+      "patientName": "Bob Wilson",
+      "doctorName": "Dr. Bruce Wayne",
+      "date": "2024-07-29",
+      "time": "14:00",
+      "type": "Follow-up",
+      "status": "completed",
+      "notes": ""
+    },
+    {
+      "patientId": "P001",
+      "doctorId": "D001",
+      "date": "2025-04-20",
+      "time": "07:16",
+      "type": "Check-up",
+      "notes": "",
+      "id": "9afb47c2-d19a-41d7-8071-44003bea4a53",
+      "patientName": "John Smith",
+      "doctorName": "Dr. Bruce Wayne",
+      "status": "pending"
+    },
+    {
+      "id": "A004",
+      "patientId": "P004",
+      "doctorId": "D002",
+      "patientName": "Alice Green",
+      "doctorName": "Dr. Stephen Strange",
+      "date": "2025-04-19",
+      "time": "09:00",
+      "type": "Consultation",
+      "status": "pending",
+      "notes": "Headache assessment"
+    },
+    {
+      "id": "A005",
+      "patientId": "P005",
+      "doctorId": "D005",
+      "patientName": "Charlie Brown",
+      "doctorName": "Dr. Lisa Cuddy",
+      "date": "2025-04-19",
+      "time": "15:30",
+      "type": "Check-up",
+      "status": "pending",
+      "notes": "Routine check"
+    },
+    {
+      "id": "A006",
+      "patientId": "P001",
+      "doctorId": "D006",
+      "patientName": "John Smith",
+      "doctorName": "Dr. Cristina Yang",
+      "date": "2025-04-20",
+      "time": "11:00",
+      "type": "Follow-up",
+      "status": "pending",
+      "notes": "Post-surgery check"
+    },
+    {
+      "id": "A007",
+      "patientId": "P003",
+      "doctorId": "D003",
+      "patientName": "Bob Wilson",
+      "doctorName": "Dr. Meredith Grey",
+      "date": "2025-04-20",
+      "time": "16:00",
+      "type": "Check-up",
+      "status": "pending",
+      "notes": ""
+    },
+    {
+      "id": "A008",
+      "patientId": "P002",
+      "doctorId": "D004",
+      "patientName": "Jane Doe",
+      "doctorName": "Dr. Gregory House",
+      "date": "2025-04-21",
+      "time": "10:30",
+      "type": "Consultation",
+      "status": "pending",
+      "notes": "Review imaging"
+    }
+  ]
+}
