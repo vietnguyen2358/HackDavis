@@ -6,11 +6,11 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Properly await the params in Next.js 13+
+    // In Next.js 13+, params is an object that must be properly awaited
     const resolvedParams = await Promise.resolve(params);
     const id = resolvedParams.id;
     
-    // Get the transcription using the id variable
+    // Now use the id to get the transcription
     const transcription = getTranscriptionById(id);
     
     if (!transcription) {

@@ -39,6 +39,26 @@
       "type": "transcription",
       "_id": "1745143297504",
       "createdAt": "2025-04-20T10:01:37.504Z"
+    },
+    {
+      "title": "New Chat Demo ",
+      "patientId": "P001",
+      "transcription": "testing 1 2 3 this is my current test live transcription and notes and we're going to be giving penicillin to our person",
+      "notes": "CLINICAL NOTES\n  \nPatient presents with testing 1 2 3 this is my current test live transcription and notes and we're going to be giving penicillin to our person.\n\nAssessment:\n- Patient history recorded in transcript (23 words)\n- Key points extracted from conversation\n- testing 1 2 3 this is my current test live transcription and notes and we're going to be giving penicillin to our person\n\nPlan:\n1. Follow up in 2 weeks\n2. Medication as discussed\n3. Refer to specialist if symptoms persist\n\nThese notes were automatically generated from the transcription and should be reviewed for accuracy.",
+      "duration": "1 min",
+      "type": "transcription",
+      "_id": "1745144006997",
+      "createdAt": "2025-04-20T10:13:26.997Z"
+    },
+    {
+      "title": "test",
+      "patientId": "P001",
+      "transcription": "testing 1 2 3 this is a microphone test",
+      "notes": "CLINICAL NOTES\n  \nPatient presents with testing 1 2 3 this is a microphone test.\n\nAssessment:\n- Patient history recorded in transcript (9 words)\n- Key points extracted from conversation\n- testing 1 2 3 this is a microphone test\n\nPlan:\n1. Follow up in 2 weeks\n2. Medication as discussed\n3. Refer to specialist if symptoms persist\n\nThese notes were automatically generated from the transcription and should be reviewed for accuracy.",
+      "duration": "1 min",
+      "type": "transcription",
+      "_id": "1745148104508",
+      "createdAt": "2025-04-20T11:21:44.508Z"
     }
   ]
 }
