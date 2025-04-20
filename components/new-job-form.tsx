@@ -29,7 +29,11 @@ interface Patient {
   name: string;
 }
 
-export function NewJobForm() {
+interface NewJobFormProps {
+  onSuccess?: () => void;
+}
+
+export function NewJobForm({ onSuccess }: NewJobFormProps) {
   const { toast } = useToast()
   const router = useRouter()
   const [patients, setPatients] = useState<Patient[]>([])
@@ -81,16 +85,54 @@ export function NewJobForm() {
         throw new Error('Selected patient not found')
       }
       
-      // Format the data according to the required structure
+      // Generate detailed notes based on job type
+      let detailedNotes = values.notes || "";
+      if (!detailedNotes) {
+        switch (values.jobType) {
+          case "checkup":
+            detailedNotes = `Regular check-up call for ${values.personName}. Review recent symptoms and medication effectiveness.`;
+            break;
+          case "appointment":
+            detailedNotes = `Schedule appointment for ${values.personName}. Discuss available time slots and prepare necessary documentation.`;
+            break;
+          case "reminder":
+            detailedNotes = `Send appointment reminder to ${values.personName}. Confirm attendance and provide preparation instructions.`;
+            break;
+          case "followup":
+            detailedNotes = `Follow-up call with ${values.personName} after recent treatment. Check on recovery progress and address any concerns.`;
+            break;
+          default:
+            detailedNotes = `AI-assisted task for ${values.personName}.`;
+        }
+      }
+      
+      // Create the job first
+      const jobResponse = await fetch('/api/jobs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          patientId: selectedPatient.id,
+          patientName: values.personName,
+          jobType: values.jobType,
+          notes: detailedNotes
+        }),
+      })
+
+      if (!jobResponse.ok) {
+        throw new Error('Failed to create job')
+      }
+
+      const job = await jobResponse.json()
+      
+      // Format the data for the outbound call
       const jobData = {
         patientId: selectedPatient.id,
         jobType: values.jobType,
-        additionalNotes: values.notes || ""
+        additionalNotes: detailedNotes,
+        jobId: job.id // Pass the job ID to update progress
       }
-      
-      console.log('Submitting job data:', jobData)
-      console.log('Selected patient:', selectedPatient)
-      console.log('Job type:', values.jobType)
       
       // Use the ngrok URL from environment variable
       const ngrokUrl = process.env.NEXT_PUBLIC_NGROK_URL
@@ -98,11 +140,9 @@ export function NewJobForm() {
         throw new Error('Ngrok URL not configured')
       }
       
-      console.log('Using ngrok URL:', ngrokUrl)
       // Remove trailing slash if present to avoid double slashes
       const baseUrl = ngrokUrl.endsWith('/') ? ngrokUrl.slice(0, -1) : ngrokUrl
       const apiUrl = `${baseUrl}/outbound-call`
-      console.log('Full API URL:', apiUrl)
       
       // Use our own API as a proxy to avoid CORS issues
       const response = await fetch('/api/proxy-outbound-call', {
@@ -116,8 +156,6 @@ export function NewJobForm() {
         }),
       })
 
-      console.log('API response status:', response.status)
-      
       if (!response.ok) {
         const errorText = await response.text()
         console.error('API error response:', errorText)
@@ -127,12 +165,55 @@ export function NewJobForm() {
       const responseData = await response.json()
       console.log('API success response:', responseData)
 
+      // Update job status to In Progress
+      await fetch('/api/jobs', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          jobId: job.id,
+          status: 'In Progress',
+          progress: 0
+        }),
+      })
+
+      // Simulate job completion after a delay (for demo purposes)
+      setTimeout(async () => {
+        try {
+          // Update job status to Completed
+          await fetch('/api/jobs', {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              jobId: job.id,
+              status: 'Completed',
+              progress: 100
+            }),
+          })
+          
+          // Refresh the page to show updated job status
+          router.refresh()
+        } catch (error) {
+          console.error('Error updating job status:', error)
+        }
+      }, 30000) // Simulate completion after 30 seconds
+
       toast({
         title: "Job created successfully",
         description: `Created a new ${values.jobType} job for ${values.personName}`,
       })
+      
+      // Reset form and close modal
       form.reset()
       router.refresh()
+      
+      // Call onSuccess callback if provided
+      if (onSuccess) {
+        onSuccess()
+      }
       
       // Close the modal after successful submission
       if (closeButtonRef.current) {
@@ -191,10 +272,10 @@ export function NewJobForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="checkup">Patient Check-up</SelectItem>
-                  <SelectItem value="appointment">Schedule Appointment</SelectItem>
-                  <SelectItem value="reminder">Appointment Reminder</SelectItem>
-                  <SelectItem value="followup">Patient Follow-up</SelectItem>
+                  <SelectItem key="checkup" value="checkup">Patient Check-up</SelectItem>
+                  <SelectItem key="appointment" value="appointment">Schedule Appointment</SelectItem>
+                  <SelectItem key="reminder" value="reminder">Appointment Reminder</SelectItem>
+                  <SelectItem key="followup" value="followup">Patient Follow-up</SelectItem>
                 </SelectContent>
               </Select>
               <FormDescription>Select the type of task for the AI assistant to perform</FormDescription>

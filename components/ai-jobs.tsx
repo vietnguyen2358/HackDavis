@@ -17,48 +17,32 @@ interface Job {
   notes?: string
 }
 
-export function UpcomingAIJobs() {
+export function AIJobs() {
   const [jobs, setJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedJob, setSelectedJob] = useState<Job | null>(null)
-  const [refreshing, setRefreshing] = useState(false)
-  const [progress, setProgress] = useState(0)
 
-  const fetchJobs = async () => {
-    try {
-      setRefreshing(true)
-      const response = await fetch('/api/jobs')
-      if (!response.ok) {
-        throw new Error('Failed to fetch jobs')
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch('/api/jobs')
+        if (!response.ok) {
+          throw new Error('Failed to fetch jobs')
+        }
+        const data = await response.json()
+        setJobs(data)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch jobs')
+      } finally {
+        setLoading(false)
       }
-      const data = await response.json()
-      setJobs(data)
-      setProgress(0) // Reset progress after successful fetch
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch jobs')
-    } finally {
-      setLoading(false)
-      setRefreshing(false)
     }
-  }
 
-  useEffect(() => {
     fetchJobs()
-    // Refresh jobs every 10 seconds
-    const interval = setInterval(fetchJobs, 10000)
+    // Refresh jobs every 5 seconds to show status updates more quickly
+    const interval = setInterval(fetchJobs, 5000)
     return () => clearInterval(interval)
-  }, [])
-
-  // Progress bar effect
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) return 0
-        return prev + 1
-      })
-    }, 100) // Update every 100ms for smooth animation
-    return () => clearInterval(timer)
   }, [])
 
   if (loading) {
@@ -87,15 +71,6 @@ export function UpcomingAIJobs() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-2 px-3">
-        <Progress value={progress} className="h-1" />
-        {refreshing && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            <span>Refreshing...</span>
-          </div>
-        )}
-      </div>
       {jobs.map((job) => (
         <div key={job.id} className="flex items-center justify-between p-3 rounded-lg border">
           <div className="flex items-center gap-3">
@@ -115,6 +90,9 @@ export function UpcomingAIJobs() {
               <p className="text-sm text-muted-foreground">
                 {new Date(job.startTime).toLocaleTimeString()} - {job.jobType}
               </p>
+              {job.progress > 0 && job.status !== "Completed" && (
+                <Progress value={job.progress} className="w-32 h-1 mt-1" />
+              )}
             </div>
           </div>
           <div className="flex items-center gap-2">

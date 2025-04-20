@@ -42,8 +42,7 @@ export default function Dashboard() {
 
         <Card className="w-full shadow-sm card-hover">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xl font-semibold">Upcoming AI Jobs</CardTitle>
-            <CardDescription>Next 24 hours</CardDescription>
+            <CardTitle className="text-xl font-semibold">AI Jobs</CardTitle>
           </CardHeader>
           <CardContent>
             <Suspense fallback={<div className="h-64 flex items-center justify-center">Loading upcoming AI jobs...</div>}>
