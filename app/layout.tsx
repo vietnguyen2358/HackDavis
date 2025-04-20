@@ -31,7 +31,8 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         
         {/* Preload critical assets */}
-        <link rel="preload" href="/hero-pattern.svg" as="image" type="image/svg+xml" />
+        <link rel="preload" href="/logo.svg" as="image" type="image/svg+xml" />
+        <link rel="preload" href="/favicon.ico" as="image" type="image/x-icon" />
         
         {/* Add DNS prefetch for third-party resources */}
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
@@ -39,6 +40,8 @@ export default function RootLayout({
         {/* Add meta viewport for responsive design */}
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
         
+        {/* Improved caching for static assets */}
+        <meta httpEquiv="Cache-Control" content="public, max-age=31536000, immutable" />
       </head>
       <body suppressHydrationWarning className="w-full h-full font-tiempos">
         <AppStateProvider>

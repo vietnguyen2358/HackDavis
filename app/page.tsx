@@ -20,11 +20,55 @@ import {
 import { TestimonialCarousel } from "@/components/testimonial-carousel"
 import { StatsSection } from "@/components/stats-section"
 import { UpcomingAIJobs } from "@/components/upcoming-ai-jobs"
+import { CardSkeleton, Skeleton } from "@/components/ui/skeleton"
+
+// Lazy load components that aren't immediately visible
+const LazyTestimonialCarousel = lazy(() => import('@/components/testimonial-carousel').then(mod => ({ default: mod.TestimonialCarousel })))
+const LazyStatsSection = lazy(() => import('@/components/stats-section').then(mod => ({ default: mod.StatsSection })))
+
+// Loading skeleton for testimonials
+function TestimonialSkeleton() {
+  return (
+    <div className="space-y-6">
+      <div className="mx-auto flex justify-center">
+        <Skeleton className="h-2 w-20 rounded-full" />
+      </div>
+      <div className="space-y-2">
+        <Skeleton className="h-32 w-full rounded-xl" />
+        <div className="pt-4 flex items-center justify-center space-x-2">
+          <Skeleton className="h-10 w-10 rounded-full" />
+          <div>
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-3 w-24 mt-1" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Loading skeleton for stats
+function StatsSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {[1, 2, 3, 4].map((item) => (
+        <div key={item} className="p-6 rounded-lg border bg-card text-card-foreground shadow-sm">
+          <div className="flex flex-col space-y-1.5">
+            <Skeleton className="h-10 w-10 rounded-md" />
+            <Skeleton className="h-7 w-24 mt-2" />
+            <Skeleton className="h-4 w-full mt-2" />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 // Performance mode toggle for low bandwidth users
 // Check if user has saved preference or has slow connection
 export default function LandingPage() {
   const [isLowPerformanceMode, setIsLowPerformanceMode] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
     // Check for saved preference
@@ -44,6 +88,10 @@ export default function LandingPage() {
     if (savedMode === 'false') {
       setIsLowPerformanceMode(false);
     }
+    
+    // Simulate content loading
+    const timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
   }, []);
 
   const togglePerformanceMode = () => {
@@ -313,7 +361,9 @@ export default function LandingPage() {
             </p>
           </FadeIn>
           
-          <StatsSection stats={stats} className="font-tiempos mt-12" />
+          <Suspense fallback={<StatsSkeleton />}>
+            {isLoading ? <StatsSkeleton /> : <LazyStatsSection stats={stats} className="font-tiempos mt-12" />}
+          </Suspense>
         </div>
       </section>
 
@@ -347,7 +397,13 @@ export default function LandingPage() {
           )}
           
           <div className="mx-auto max-w-4xl mt-12">
-            <TestimonialCarousel testimonials={testimonialData} autoPlay={!isLowPerformanceMode} />
+            <Suspense fallback={<TestimonialSkeleton />}>
+              {isLoading ? (
+                <TestimonialSkeleton />
+              ) : (
+                <LazyTestimonialCarousel testimonials={testimonialData} autoPlay={!isLowPerformanceMode} />
+              )}
+            </Suspense>
           </div>
         </div>
       </section>

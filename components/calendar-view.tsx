@@ -56,9 +56,17 @@ export function CalendarView() {
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <Card className="p-4 md:col-span-1">
-        <Calendar mode="single" selected={date} onSelect={setDate} className="rounded-md border" />
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
+      {/* Calendar Card - make it full width on smaller screens */}
+      <Card className="p-4 lg:col-span-1 overflow-hidden">
+        <div className="flex justify-center">
+          <Calendar 
+            mode="single" 
+            selected={date} 
+            onSelect={setDate} 
+            className="max-w-full overflow-x-auto rounded-md border" 
+          />
+        </div>
 
         <div className="mt-4">
           <h3 className="text-sm font-medium mb-2">Appointment Legend</h3>
@@ -79,8 +87,9 @@ export function CalendarView() {
         </div>
       </Card>
 
-      <Card className="p-4 md:col-span-2">
-        <div className="flex items-center justify-between mb-4">
+      {/* Appointments Card */}
+      <Card className="p-4 lg:col-span-2 overflow-hidden">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
           <h3 className="text-lg font-medium">
             {date?.toLocaleDateString("en-US", {
               weekday: "long",
@@ -98,9 +107,12 @@ export function CalendarView() {
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 overflow-y-auto max-h-[calc(100vh-20rem)]">
           {appointments.map((appointment) => (
-            <div key={appointment.id} className="flex items-center justify-between p-3 rounded-lg border">
+            <div 
+              key={appointment.id} 
+              className="flex items-center justify-between p-3 rounded-lg border flex-wrap gap-3 sm:flex-nowrap"
+            >
               <div className="flex items-center gap-3">
                 <Avatar>
                   <AvatarImage src={appointment.avatar || "/placeholder.svg"} alt={appointment.patientName} />
@@ -113,7 +125,7 @@ export function CalendarView() {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 ml-auto">
                 <Badge
                   className={
                     appointment.type === "Check-up"

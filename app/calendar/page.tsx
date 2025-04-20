@@ -8,7 +8,7 @@ import { CalendarStats } from "@/components/calendar-stats"
 
 export default function CalendarPage() {
   return (
-    <div className="flex flex-col p-6 space-y-6">
+    <div className="flex flex-col p-4 md:p-6 space-y-6 w-full max-w-full mobile-nav-spacing">
       <PageHeader
         title="Calendar Management"
         description="AI-powered appointment scheduling and optimization"
@@ -22,14 +22,23 @@ export default function CalendarPage() {
         }
       />
 
-      <CalendarStats />
+      <div className="w-full overflow-hidden">
+        <CalendarStats />
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Appointment Calendar</CardTitle>
-          <CardDescription>View and manage upcoming appointments</CardDescription>
+      <Card className="w-full overflow-hidden">
+        <CardHeader className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+          <div>
+            <CardTitle>Appointment Calendar</CardTitle>
+            <CardDescription>View and manage upcoming appointments</CardDescription>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm">Week</Button>
+            <Button variant="outline" size="sm">Month</Button>
+            <Button variant="default" size="sm">Day</Button>
+          </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 overflow-x-auto">
           <CalendarView />
         </CardContent>
       </Card>

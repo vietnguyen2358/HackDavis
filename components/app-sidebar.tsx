@@ -29,6 +29,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
+  SidebarMenuSkeleton,
   useSidebar
 } from "@/components/ui/sidebar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -42,6 +43,7 @@ export function AppSidebar() {
   const { toggleSidebar, openMobile, setOpenMobile, isMobile } = useSidebar()
   const [mounted, setMounted] = useState(false)
   const [sidebarVisible, setSidebarVisible] = useState(false)
+  const [loading, setLoading] = useState(true)
   
   const isLandingPage = pathname === "/"
 
@@ -50,6 +52,9 @@ export function AppSidebar() {
     setMounted(true)
     // Initialize sidebar visibility based on page
     setSidebarVisible(!isLandingPage)
+    // Simulate loading time for sidebar elements
+    const timer = setTimeout(() => setLoading(false), 500)
+    return () => clearTimeout(timer)
   }, [pathname, isLandingPage])
 
   const isActive = (path: string) => {
@@ -156,36 +161,47 @@ export function AppSidebar() {
 
       <SidebarContent className="px-2">
         <SidebarMenu className="space-y-2">
-          {menuItems.map((item) => (
-            <SidebarMenuItem key={item.path}>
-              <SidebarMenuButton 
-                asChild 
-                isActive={isActive(item.path)}
-                className="transition-all duration-200"
-              >
-                <Link 
-                  href={item.path} 
-                  className={`flex items-center gap-3 px-4 py-3 rounded-md group relative overflow-hidden ${
-                    isActive(item.path) 
-                      ? 'bg-sidebar-accent' 
-                      : 'hover:bg-sidebar-accent'
-                  }`}
-                  onClick={() => isMobile && setOpenMobile(false)}
+          {loading ? (
+            // Loading skeletons for menu items
+            <>
+              <SidebarMenuSkeleton showIcon={true} />
+              <SidebarMenuSkeleton showIcon={true} />
+              <SidebarMenuSkeleton showIcon={true} />
+              <SidebarMenuSkeleton showIcon={true} />
+            </>
+          ) : (
+            // Actual menu items
+            menuItems.map((item) => (
+              <SidebarMenuItem key={item.path}>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={isActive(item.path)}
+                  className="transition-all duration-200"
                 >
-                  <div className={`flex items-center justify-center h-9 w-9 rounded-md transition-all duration-200 ${
-                    isActive(item.path) 
-                      ? 'text-primary' 
-                      : 'text-sidebar-foreground group-hover:text-primary'
-                  }`}>
-                    <item.icon className="h-5 w-5" />
-                  </div>
-                  <span className={`font-medium relative z-10 ${
-                    isActive(item.path) ? 'text-primary' : 'text-sidebar-foreground group-hover:text-primary'
-                  }`}>{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+                  <Link 
+                    href={item.path} 
+                    className={`flex items-center gap-3 px-4 py-3 rounded-md group relative overflow-hidden ${
+                      isActive(item.path) 
+                        ? 'bg-sidebar-accent' 
+                        : 'hover:bg-sidebar-accent'
+                    }`}
+                    onClick={() => isMobile && setOpenMobile(false)}
+                  >
+                    <div className={`flex items-center justify-center h-9 w-9 rounded-md transition-all duration-200 ${
+                      isActive(item.path) 
+                        ? 'text-primary' 
+                        : 'text-sidebar-foreground group-hover:text-primary'
+                    }`}>
+                      <item.icon className="h-5 w-5" />
+                    </div>
+                    <span className={`font-medium relative z-10 ${
+                      isActive(item.path) ? 'text-primary' : 'text-sidebar-foreground group-hover:text-primary'
+                    }`}>{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))
+          )}
         </SidebarMenu>
       </SidebarContent>
 
@@ -193,24 +209,36 @@ export function AppSidebar() {
 
       <SidebarFooter className="p-4 mt-auto bg-gradient-to-t from-primary/5 to-transparent">
         <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-3 p-2 rounded-md hover:bg-sidebar-accent transition-colors duration-200">
-            <Avatar className="h-10 w-10 border-2 border-primary/20 shadow-md">
-              <AvatarImage asChild alt="User">
-                <Image 
-                  src="/placeholder.svg" 
-                  alt="User" 
-                  width={40} 
-                  height={40}
-                  priority={false}
-                />
-              </AvatarImage>
-              <AvatarFallback className="bg-primary/10 text-primary">DR</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium">Dr. Sarah Johnson</span>
-              <span className="text-xs text-muted-foreground">Admin</span>
+          {loading ? (
+            // Loading skeleton for user profile
+            <div className="flex items-center gap-3 p-2 rounded-md">
+              <div className="h-10 w-10 rounded-full bg-sidebar-accent/30 animate-pulse"></div>
+              <div className="flex flex-col gap-1">
+                <div className="h-4 w-32 bg-sidebar-accent/30 rounded-md animate-pulse"></div>
+                <div className="h-3 w-16 bg-sidebar-accent/30 rounded-md animate-pulse"></div>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex items-center gap-3 p-2 rounded-md hover:bg-sidebar-accent transition-colors duration-200">
+              <Avatar className="h-10 w-10 border-2 border-primary/20 shadow-md">
+                <AvatarImage asChild alt="User">
+                  <Image 
+                    src="/placeholder.svg" 
+                    alt="User" 
+                    width={40} 
+                    height={40}
+                    loading="lazy"
+                    priority={false}
+                  />
+                </AvatarImage>
+                <AvatarFallback className="bg-primary/10 text-primary">DR</AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">Dr. Sarah Johnson</span>
+                <span className="text-xs text-muted-foreground">Admin</span>
+              </div>
+            </div>
+          )}
           
           <div className="flex items-center gap-2 px-2">
             <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-primary/10">
