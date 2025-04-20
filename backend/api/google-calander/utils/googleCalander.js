@@ -31,6 +31,9 @@ const createCalendarEvent=async (patient)=>{
     const startDateTime = new Date(date);
     startDateTime.setHours(hrs, mins, 0);
 
+    // Define endDateTime as 30 minutes after startDateTime
+    const endDateTime = new Date(startDateTime.getTime() + 30 * 60000);
+
     const event={
         summary: `${type} - ${patientName}`,
         description: details?.notes || "Patient Appointment",

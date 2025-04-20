@@ -1,5 +1,13 @@
-import mongoose from 'mongoose';  
-const patientSchema=new mongoose.Schema({
+import mongoose from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
+
+const appointmentSchema = new mongoose.Schema({
+    id: {
+        type: String,
+        default: uuidv4,
+        unique: true,
+        required: true
+    },
     patientName:{
         type:String,
         required:true,
@@ -28,6 +36,8 @@ const patientSchema=new mongoose.Schema({
             type:String
         }
     }
-})
-const Patient=mongoose.model('Patient',patientSchema)
-export default Patient;
+});
+
+// Rename model to 'Appointment' to avoid collection name conflicts with 'patients'
+const Appointment = mongoose.model('Appointment', appointmentSchema);
+export default Appointment;
