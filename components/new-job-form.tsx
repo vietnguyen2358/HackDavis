@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -38,7 +38,7 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
   const router = useRouter()
   const [patients, setPatients] = useState<Patient[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const closeButtonRef = useRef<HTMLButtonElement>(null)
+  const [isOpen, setIsOpen] = useState(true)
 
   useEffect(() => {
     // Fetch patients from the EHR data
@@ -215,10 +215,7 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
         onSuccess()
       }
       
-      // Close the modal after successful submission
-      if (closeButtonRef.current) {
-        closeButtonRef.current.click()
-      }
+      // The modal will be closed by the DialogClose component
     } catch (error) {
       console.error('Error creating job:', error)
       toast({
@@ -272,10 +269,18 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem key="checkup" value="checkup">Patient Check-up</SelectItem>
-                  <SelectItem key="appointment" value="appointment">Schedule Appointment</SelectItem>
-                  <SelectItem key="reminder" value="reminder">Appointment Reminder</SelectItem>
-                  <SelectItem key="followup" value="followup">Patient Follow-up</SelectItem>
+                  <SelectItem key="checkup" value="checkup">
+                    <span key="checkup-text">Patient Check-up</span>
+                  </SelectItem>
+                  <SelectItem key="appointment" value="appointment">
+                    <span key="appointment-text">Schedule Appointment</span>
+                  </SelectItem>
+                  <SelectItem key="reminder" value="reminder">
+                    <span key="reminder-text">Appointment Reminder</span>
+                  </SelectItem>
+                  <SelectItem key="followup" value="followup">
+                    <span key="followup-text">Patient Follow-up</span>
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <FormDescription>Select the type of task for the AI assistant to perform</FormDescription>
@@ -303,8 +308,8 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
         />
 
         <div className="flex justify-end gap-4">
-          <DialogClose asChild>
-            <Button type="button" variant="outline" ref={closeButtonRef}>Cancel</Button>
+          <DialogClose>
+            <Button type="button" variant="outline">Cancel</Button>
           </DialogClose>
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Creating..." : "Submit Job"}
