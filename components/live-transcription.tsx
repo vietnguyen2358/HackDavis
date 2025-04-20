@@ -254,13 +254,13 @@ export function LiveTranscription() {
         description: "Transcription saved successfully",
       })
       
-      // Clear the form and refresh the page to show the new transcription
+      // Clear the form
       setTranscription("")
       setNotes("")
       setTitle("")
       
-      // Redirect to documentation page or reload the current page
-      router.refresh()
+      // Force a hard refresh of the page to show the newly added transcription
+      window.location.href = "/documentation";
       
     } catch (error) {
       console.error("Error saving transcription:", error)

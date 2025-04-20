@@ -1,0 +1,44 @@
+{
+  "transcriptions": [
+    {
+      "title": "this is a test",
+      "patientId": "P001",
+      "transcription": "yeah",
+      "notes": "CLINICAL NOTES\n  \nPatient presents with yeah.\n\nAssessment:\n- Patient history recorded in transcript (1 words)\n- Key points extracted from conversation\n- yeah\n\nPlan:\n1. Follow up in 2 weeks\n2. Medication as discussed\n3. Refer to specialist if symptoms persist\n\nThese notes were automatically generated from the transcription and should be reviewed for accuracy.",
+      "duration": "1 min",
+      "type": "transcription",
+      "_id": "1745142739286",
+      "createdAt": "2025-04-20T09:52:19.286Z"
+    },
+    {
+      "title": "notes for sarh",
+      "patientId": "P001",
+      "transcription": "testing one two three this is a microphone test documentation support AI power transcription UC Davis dashboard documentation calendar patients enter title for this transcription I'm Dr Sarah Johnson administrator",
+      "notes": "CLINICAL NOTES\n  \nPatient presents with testing one two three this is a microphone test documentation support ai power transcription uc davis dashboard documentation calendar patients enter title for this transcription i'm dr sarah johnson ad.\n\nAssessment:\n- Patient history recorded in transcript (30 words)\n- Key points extracted from conversation\n- testing one two three this is a microphone test documentation support AI power transcription UC Davis dashboard documentation calendar patients enter title for this transcription I'm Dr Sarah Johnson ad\n\nPlan:\n1. Follow up in 2 weeks\n2. Medication as discussed\n3. Refer to specialist if symptoms persist\n\nThese notes were automatically generated from the transcription and should be reviewed for accuracy.",
+      "duration": "1 min",
+      "type": "transcription",
+      "_id": "1745142793775",
+      "createdAt": "2025-04-20T09:53:13.775Z"
+    },
+    {
+      "title": "Sarah",
+      "patientId": "P001",
+      "transcription": "testing 1 2 3 this is a microphone test my name is Dr Steve and we are prescribing our client Sarah penicillin the reason is she was experiencing some recent dizziness and some nausea and it had instances where she was throwing up",
+      "notes": "CLINICAL NOTES\n  \nPatient presents with testing 1 2 3 this is a microphone test my name is dr steve and we are prescribing our client sarah penicillin the reason is she was experiencing some recent dizziness and some nausea and it had instances where she was throwing up.\n\nAssessment:\n- Patient history recorded in transcript (43 words)\n- Key points extracted from conversation\n- testing 1 2 3 this is a microphone test my name is Dr Steve and we are prescribing our client Sarah penicillin the reason is she was experiencing some recent dizziness and some nausea and it had instances where she was throwing up\n\nPlan:\n1. Follow up in 2 weeks\n2. Medication as discussed\n3. Refer to specialist if symptoms persist\n\nThese notes were automatically generated from the transcription and should be reviewed for accuracy.",
+      "duration": "1 min",
+      "type": "transcription",
+      "_id": "1745143121314",
+      "createdAt": "2025-04-20T09:58:41.314Z"
+    },
+    {
+      "title": "ij",
+      "patientId": "P001",
+      "transcription": "test 23 test",
+      "notes": "CLINICAL NOTES\n  \nPatient presents with test 23.\n\nAssessment:\n- Patient history recorded in transcript (2 words)\n- Key points extracted from conversation\n- test 23\n\nPlan:\n1. Follow up in 2 weeks\n2. Medication as discussed\n3. Refer to specialist if symptoms persist\n\nThese notes were automatically generated from the transcription and should be reviewed for accuracy.",
+      "duration": "1 min",
+      "type": "transcription",
+      "_id": "1745143297504",
+      "createdAt": "2025-04-20T10:01:37.504Z"
+    }
+  ]
+}

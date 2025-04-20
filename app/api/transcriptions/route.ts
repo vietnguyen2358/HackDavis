@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/db';
-import Transcription from '@/lib/models/transcription';
+import { getAllTranscriptions, saveTranscription } from '@/lib/localData';
 
 // Save a new transcription
 export async function POST(request: NextRequest) {
   try {
-    // Connect to the database
-    await connectToDatabase();
-    
     // Parse the request body
     const data = await request.json();
     const { title, patientId, transcription, notes, duration } = data;
@@ -20,8 +16,8 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Create a new transcription
-    const newTranscription = await Transcription.create({
+    // Create a new transcription using our local data utility
+    const newTranscription = saveTranscription({
       title,
       patientId,
       transcription,
@@ -47,13 +43,8 @@ export async function POST(request: NextRequest) {
 // Get all transcriptions
 export async function GET() {
   try {
-    // Connect to the database
-    await connectToDatabase();
-    
-    // Get all transcriptions, sorted by creation date (newest first)
-    const transcriptions = await Transcription.find()
-      .sort({ createdAt: -1 })
-      .lean();
+    // Get all transcriptions from our local data
+    const transcriptions = getAllTranscriptions();
     
     return NextResponse.json({ 
       success: true, 

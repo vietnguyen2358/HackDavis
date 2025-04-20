@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/db';
-import Transcription from '@/lib/models/transcription';
+import { getTranscriptionById } from '@/lib/localData';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // Connect to the database
-    await connectToDatabase();
+    // Properly await the params in Next.js 13+
+    const resolvedParams = await Promise.resolve(params);
+    const id = resolvedParams.id;
     
-    // Get the transcription by ID
-    const transcription = await Transcription.findById(params.id);
+    // Get the transcription using the id variable
+    const transcription = getTranscriptionById(id);
     
     if (!transcription) {
       return NextResponse.json(
@@ -65,7 +65,7 @@ export async function GET(
     return new NextResponse(htmlContent, {
       headers: {
         'Content-Type': 'text/html',
-        'Content-Disposition': `attachment; filename="transcription-${params.id}.html"`,
+        'Content-Disposition': `attachment; filename="transcription-${id}.html"`,
       },
     });
     

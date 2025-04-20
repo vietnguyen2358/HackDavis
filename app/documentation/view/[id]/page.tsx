@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, Download } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { connectToDatabase } from "@/lib/db"
-import Transcription from "@/lib/models/transcription"
+import { getTranscriptionById } from "@/lib/localData"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { TranscriptionViewer } from "@/components/transcription-viewer"
@@ -16,16 +15,16 @@ interface PageProps {
   }
 }
 
+// Helper function to get transcription data
 async function getTranscriptionData(id: string) {
   try {
-    await connectToDatabase()
-    const transcription = await Transcription.findById(id)
+    const transcription = getTranscriptionById(id);
     
     if (!transcription) {
       return null
     }
     
-    return JSON.parse(JSON.stringify(transcription))
+    return transcription;
   } catch (error) {
     console.error("Error fetching transcription:", error)
     return null
@@ -33,7 +32,12 @@ async function getTranscriptionData(id: string) {
 }
 
 export default async function ViewTranscriptionPage({ params }: PageProps) {
-  const transcription = await getTranscriptionData(params.id)
+  // In Next.js 13+, params needs to be properly awaited
+  const resolvedParams = await Promise.resolve(params);
+  const id = resolvedParams.id;
+  
+  // Now use the id variable
+  const transcription = await getTranscriptionData(id)
   
   if (!transcription) {
     notFound()
@@ -55,7 +59,7 @@ export default async function ViewTranscriptionPage({ params }: PageProps) {
               </Link>
             </Button>
             <Button asChild>
-              <Link href={`/api/transcriptions/${params.id}/pdf`} target="_blank">
+              <Link href={`/api/transcriptions/${id}/pdf`} target="_blank">
                 <Download className="mr-2 h-4 w-4" />
                 Download PDF
               </Link>
