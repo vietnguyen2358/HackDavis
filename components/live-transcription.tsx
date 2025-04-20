@@ -3,10 +3,13 @@
 import { useState, useEffect, useRef } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Mic, MicOff, Loader2 } from "lucide-react"
+import { Mic, MicOff, Loader2, Save, Download } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useToast } from "@/components/ui/use-toast"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { useRouter } from "next/navigation"
 
 // Add type definitions for Speech Recognition
 interface SpeechRecognitionEvent extends Event {
@@ -62,10 +65,15 @@ export function LiveTranscription() {
   const [transcription, setTranscription] = useState("")
   const [notes, setNotes] = useState("")
   const [isProcessing, setIsProcessing] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [title, setTitle] = useState("")
+  const [recordingStartTime, setRecordingStartTime] = useState<Date | null>(null)
+  const [recordingDuration, setRecordingDuration] = useState("0 min")
   const { toast } = useToast()
   const recognitionRef = useRef<SpeechRecognition | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
-  const [currentPatientId, setCurrentPatientId] = useState("P001") // Default to P001 for now
+  const [currentPatientId, setCurrentPatientId] = useState("P001")
+  const router = useRouter()
 
   const startRecording = async () => {
     try {
@@ -73,6 +81,7 @@ export function LiveTranscription() {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       streamRef.current = stream
       setIsRecording(true)
+      setRecordingStartTime(new Date())
       
       // Initialize speech recognition
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -137,6 +146,14 @@ export function LiveTranscription() {
   const stopRecording = () => {
     setIsRecording(false)
     
+    // Calculate recording duration
+    if (recordingStartTime) {
+      const endTime = new Date()
+      const durationMs = endTime.getTime() - recordingStartTime.getTime()
+      const durationMin = Math.ceil(durationMs / (1000 * 60))
+      setRecordingDuration(`${durationMin} min`)
+    }
+    
     // Stop the recognition
     if (recognitionRef.current) {
       recognitionRef.current.stop()
@@ -198,52 +215,144 @@ export function LiveTranscription() {
       setIsProcessing(false)
     }
   }
+  
+  const saveTranscription = async () => {
+    if (!transcription || !title) {
+      toast({
+        title: "Error",
+        description: "Please provide a title and ensure transcription is not empty",
+        variant: "destructive",
+      })
+      return
+    }
+    
+    setIsSaving(true)
+    
+    try {
+      const response = await fetch("/api/transcriptions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          patientId: currentPatientId,
+          transcription,
+          notes,
+          duration: recordingDuration,
+        }),
+      })
+      
+      if (!response.ok) {
+        throw new Error("Failed to save transcription")
+      }
+      
+      const data = await response.json()
+      
+      toast({
+        title: "Success",
+        description: "Transcription saved successfully",
+      })
+      
+      // Clear the form and refresh the page to show the new transcription
+      setTranscription("")
+      setNotes("")
+      setTitle("")
+      
+      // Redirect to documentation page or reload the current page
+      router.refresh()
+      
+    } catch (error) {
+      console.error("Error saving transcription:", error)
+      toast({
+        title: "Error",
+        description: "Failed to save transcription",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Live Transcription</h3>
-            <Button
-              variant={isRecording ? "destructive" : "default"}
-              size="icon"
-              onClick={isRecording ? stopRecording : startRecording}
-              disabled={isProcessing}
-            >
-              {isRecording ? (
-                <MicOff className="h-4 w-4" />
-              ) : (
-                <Mic className="h-4 w-4" />
-              )}
-            </Button>
-          </div>
-          <ScrollArea className="h-[300px] w-full rounded-md border p-4">
-            <p className="text-sm text-muted-foreground">
-              {transcription || "Click the microphone button to start recording..."}
-            </p>
-          </ScrollArea>
-        </CardContent>
-      </Card>
+    <div className="space-y-4">
+      <div className="mb-4">
+        <Label htmlFor="title">Title</Label>
+        <Input 
+          id="title" 
+          value={title} 
+          onChange={(e) => setTitle(e.target.value)} 
+          placeholder="Enter a title for this transcription"
+          className="mt-1"
+        />
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Live Transcription</h3>
+              <Button
+                variant={isRecording ? "destructive" : "default"}
+                size="icon"
+                onClick={isRecording ? stopRecording : startRecording}
+                disabled={isProcessing}
+              >
+                {isRecording ? (
+                  <MicOff className="h-4 w-4" />
+                ) : (
+                  <Mic className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+            <ScrollArea className="h-[300px] w-full rounded-md border p-4">
+              <p className="text-sm text-muted-foreground">
+                {transcription || "Click the microphone button to start recording..."}
+              </p>
+            </ScrollArea>
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Clinical Notes</h3>
-            {isProcessing && (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            )}
-          </div>
-          <ScrollArea className="h-[300px] w-full rounded-md border p-4">
-            <Textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Clinical notes will appear here..."
-              className="min-h-[250px] resize-none"
-            />
-          </ScrollArea>
-        </CardContent>
-      </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Clinical Notes</h3>
+              {isProcessing && (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              )}
+            </div>
+            <ScrollArea className="h-[300px] w-full rounded-md border p-4">
+              <Textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Clinical notes will appear here..."
+                className="min-h-[250px] resize-none"
+              />
+            </ScrollArea>
+          </CardContent>
+        </Card>
+      </div>
+      
+      {/* Save button */}
+      <div className="flex justify-end space-x-2">
+        <Button
+          variant="default"
+          onClick={saveTranscription}
+          disabled={isSaving || !transcription || !title}
+        >
+          {isSaving ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            <>
+              <Save className="mr-2 h-4 w-4" />
+              Save Transcription
+            </>
+          )}
+        </Button>
+      </div>
     </div>
   )
 } 
