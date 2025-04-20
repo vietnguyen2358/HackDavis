@@ -3,7 +3,6 @@ import Twilio from "twilio";
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getPatients, getPatientById, getSystemPrompt } from './mongodb/db.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -118,30 +117,27 @@ export function registerOutboundRoutes(fastify) {
 
   // Route to initiate outbound calls
   fastify.post("/outbound-call", async (request, reply) => {
-    const { patientId, jobType, additionalNotes, jobId } = request.body;
+    const { patientId, jobType } = request.body;
 
     if (!patientId) {
       return reply.code(400).send({ error: "Patient ID is required" });
     }
 
     try {
-      // Get patient data from MongoDB
-      const patient = await getPatientById(patientId);
+      // Find patient in EHR
+      const patient = ehrData.patients.find(p => p.id === patientId);
       if (!patient) {
-        throw new Error(`Patient with ID ${patientId} not found`);
-      }
-      
-      // Get system prompt from MongoDB
-      const systemPromptData = await getSystemPrompt();
-      if (!systemPromptData) {
-        throw new Error('System prompt not found in database');
+        return reply.code(404).send({ error: "Patient not found" });
       }
 
+      // Get the system prompt
+      const systemPrompt = ehrData.systemPrompt;
+
       // Create a custom prompt based on the job type and patient info
-      let customPrompt = `${systemPromptData.role}\n\n`;
-      customPrompt += `Communication Style:\n${systemPromptData.communicationStyle.join('\n')}\n\n`;
-      customPrompt += `Responsibilities:\n${systemPromptData.responsibilities.join('\n')}\n\n`;
-      customPrompt += `Guidelines:\n${systemPromptData.guidelines.join('\n')}\n\n`;
+      let customPrompt = `${systemPrompt.role}\n\n`;
+      customPrompt += `Communication Style:\n${systemPrompt.communicationStyle.join('\n')}\n\n`;
+      customPrompt += `Responsibilities:\n${systemPrompt.responsibilities.join('\n')}\n\n`;
+      customPrompt += `Guidelines:\n${systemPrompt.guidelines.join('\n')}\n\n`;
       
       // Add patient-specific information
       customPrompt += `Patient Information:\n`;
@@ -156,18 +152,18 @@ export function registerOutboundRoutes(fastify) {
       const appointment = patient.appointments[0]; // Get the most recent appointment
       switch(jobType) {
         case 'checkup':
-          customPrompt += `${systemPromptData.callTypes.checkup}\n`;
+          customPrompt += `${systemPrompt.callTypes.checkup}\n`;
           customPrompt += `Last appointment: ${appointment.type} on ${appointment.date}\n`;
           customPrompt += `Notes: ${appointment.notes}\n`;
           break;
         case 'appointment':
-          customPrompt += `${systemPromptData.callTypes.appointment}\n`;
+          customPrompt += `${systemPrompt.callTypes.appointment}\n`;
           customPrompt += `Appointment type: ${appointment.type}\n`;
           customPrompt += `Date: ${appointment.date}\n`;
           customPrompt += `Notes: ${appointment.notes}\n`;
           break;
         case 'reminder':
-          customPrompt += `${systemPromptData.callTypes.reminder}\n`;
+          customPrompt += `${systemPrompt.callTypes.reminder}\n`;
           customPrompt += `Appointment type: ${appointment.type}\n`;
           customPrompt += `Date: ${appointment.date}\n`;
           customPrompt += `Notes: ${appointment.notes}\n`;
@@ -182,7 +178,7 @@ export function registerOutboundRoutes(fastify) {
       customPrompt += `Language: ${patient.preferences.language}\n\n`;
 
       // Add first message
-      customPrompt += `First Message: ${systemPromptData.firstMessage}\n`;
+      customPrompt += `First Message: ${systemPrompt.firstMessage}\n`;
 
       console.log("[Debug] Initiating call with prompt:", customPrompt);
 

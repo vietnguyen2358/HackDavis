@@ -1,39 +1,54 @@
-import { NextResponse } from 'next/server'
-import { getPatientByName, updatePatient } from '../../../backend/api/mongodb/db'
+import { NextResponse } from "next/server"
+import fs from 'fs'
+import path from 'path'
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const { patientName, content } = await req.json()
+    const { patientId, message, speaker } = await request.json()
 
-    // Get patient data from MongoDB
-    const patient = await getPatientByName(patientName)
-    if (!patient) {
-      return NextResponse.json({ error: 'Patient not found' }, { status: 404 })
+    if (!patientId || !message || !speaker) {
+      return NextResponse.json(
+        { error: "Patient ID, message, and speaker are required" },
+        { status: 400 }
+      )
     }
 
-    // Create new note
-    const newNote = {
+    // Read the EHR data
+    const ehrPath = path.join(process.cwd(), 'backend', 'api', 'data', 'ehr.json')
+    const ehrData = JSON.parse(fs.readFileSync(ehrPath, 'utf8'))
+
+    // Find the patient
+    const patientIndex = ehrData.patients.findIndex((p: any) => p.id === patientId)
+    if (patientIndex === -1) {
+      return NextResponse.json(
+        { error: "Patient not found" },
+        { status: 404 }
+      )
+    }
+
+    // Initialize conversation array if it doesn't exist
+    if (!ehrData.patients[patientIndex].conversation) {
+      ehrData.patients[patientIndex].conversation = []
+    }
+
+    // Add new message to conversation
+    const newMessage = {
       id: Date.now(),
-      content,
+      content: message,
       timestamp: new Date().toISOString(),
-      author: 'AI Agent'
+      speaker: speaker // 'human' or 'ai'
     }
 
-    // Add note to patient's notes array
-    const notes = patient.notes || []
-    notes.push(newNote)
+    ehrData.patients[patientIndex].conversation.push(newMessage)
 
-    // Update patient in MongoDB
-    const updatedPatient = await updatePatient(patient.id, { notes })
-    if (!updatedPatient) {
-      return NextResponse.json({ error: 'Failed to update patient' }, { status: 500 })
-    }
+    // Write back to file
+    fs.writeFileSync(ehrPath, JSON.stringify(ehrData, null, 2))
 
-    return NextResponse.json({ success: true, note: newNote })
+    return NextResponse.json({ success: true, message: newMessage })
   } catch (error) {
     console.error('Error saving conversation:', error)
     return NextResponse.json(
-      { error: 'Failed to save conversation' },
+      { error: "Failed to save conversation" },
       { status: 500 }
     )
   }

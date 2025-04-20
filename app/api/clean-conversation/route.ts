@@ -1,28 +1,43 @@
 import { NextResponse } from 'next/server';
-import { getPatientByName, updatePatient } from '../../../backend/api/mongodb/db';
+import fs from 'fs';
+import path from 'path';
 
-export async function POST(req: Request) {
+export async function GET(request: Request) {
   try {
-    const { patientName } = await req.json();
+    // Read the EHR data
+    const ehrPath = path.join(process.cwd(), 'backend/api/data/ehr.json');
+    const ehrData = JSON.parse(fs.readFileSync(ehrPath, 'utf8'));
 
-    // Get patient data from MongoDB
-    const patient = await getPatientByName(patientName);
+    // Get patient ID from query params
+    const { searchParams } = new URL(request.url);
+    const patientId = searchParams.get('patientId');
+
+    if (!patientId) {
+      return NextResponse.json({ error: 'Patient ID is required' }, { status: 400 });
+    }
+
+    // Find the patient
+    const patient = ehrData.patients.find((p: any) => p.id === patientId);
+
     if (!patient) {
       return NextResponse.json({ error: 'Patient not found' }, { status: 404 });
     }
 
-    // Clear the notes array
-    const updatedPatient = await updatePatient(patient.id, { notes: [] });
-    if (!updatedPatient) {
-      return NextResponse.json({ error: 'Failed to update patient' }, { status: 500 });
-    }
+    // Clean and format the conversation
+    const cleanedConversation = patient.conversation?.map((msg: any) => ({
+      speaker: msg.speaker,
+      message: msg.message,
+      timestamp: msg.timestamp
+    })) || [];
 
-    return NextResponse.json({ success: true });
+    // Return only the cleaned conversation data
+    return NextResponse.json({
+      patientId: patient.id,
+      patientName: patient.name,
+      conversation: cleanedConversation
+    });
   } catch (error) {
-    console.error('Error cleaning conversation:', error);
-    return NextResponse.json(
-      { error: 'Failed to clean conversation' },
-      { status: 500 }
-    );
+    console.error('Error reading conversation:', error);
+    return NextResponse.json({ error: 'Failed to read conversation' }, { status: 500 });
   }
 } 
