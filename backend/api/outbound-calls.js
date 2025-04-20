@@ -231,8 +231,9 @@ export function registerOutboundRoutes(fastify) {
       console.log("[Debug] Host header:", request.headers.host);
       console.log("[Debug] Request protocol:", request.protocol);
       
-      // Hardcode ngrok URL since .env isn't loading correctly
-      const ngrokUrl = "https://4c14-128-120-27-122.ngrok-free.app";
+      // Get ngrok URL from environment variable or use hardcoded fallback
+      const ngrokUrl = process.env.NGROK_URL || "https://4c14-128-120-27-122.ngrok-free.app";
+      console.log("[Debug] Using ngrok URL:", ngrokUrl);
 
       // Create a unique session ID for this call
       const sessionId = crypto.randomUUID();

@@ -177,9 +177,8 @@ console.log('Finished registering /appointment routes.');
 const start = async () => {
   try {
     // Register route handlers
-    // TEMP: Comment out these to test if they are causing the issue
-    // await registerInboundRoutes(fastify);
-    // await registerOutboundRoutes(fastify);
+    await registerInboundRoutes(fastify);
+    await registerOutboundRoutes(fastify);
 
     // Start listening
     await fastify.listen({ port: PORT, host: '0.0.0.0' });

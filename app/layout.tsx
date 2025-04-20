@@ -12,7 +12,10 @@ import { inter, tiempos, playfair, sfPro, getFontVariables } from "@/lib/fonts"
 export const metadata: Metadata = {
   title: "HealthAssist AI",
   description: "AI-powered healthcare dashboard for automating routine support workflows",
-  generator: 'v0.dev'
+  generator: 'v0.dev',
+  icons: {
+    icon: '/favicon.ico',
+  }
 }
 
 export default function RootLayout({
@@ -35,6 +38,7 @@ export default function RootLayout({
         
         {/* Add meta viewport for responsive design */}
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+        
       </head>
       <body suppressHydrationWarning className="w-full h-full font-tiempos">
         <AppStateProvider>

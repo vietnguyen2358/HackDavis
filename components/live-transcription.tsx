@@ -3,13 +3,13 @@
 import { useState, useEffect, useRef } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Mic, MicOff, Loader2, Save, Download } from "lucide-react"
+import { Mic, MicOff, Loader2, Save, Glasses } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useToast } from "@/components/ui/use-toast"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useRouter } from "next/navigation"
+import { Switch } from "@/components/ui/switch"
 
 // Add type definitions for Speech Recognition
 interface SpeechRecognitionEvent extends Event {
@@ -69,13 +69,20 @@ export function LiveTranscription() {
   const [title, setTitle] = useState("")
   const [recordingStartTime, setRecordingStartTime] = useState<Date | null>(null)
   const [recordingDuration, setRecordingDuration] = useState("0 min")
+  const [volumeControlEnabled, setVolumeControlEnabled] = useState(false)
+  const [volumeLevel, setVolumeLevel] = useState(0)
+  const [volumeChange, setVolumeChange] = useState<"up" | "down" | "none">("none")
   const { toast } = useToast()
   const recognitionRef = useRef<SpeechRecognition | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const [currentPatientId, setCurrentPatientId] = useState("P001")
-  const router = useRouter()
+  const lastVolumeRef = useRef<number | null>(null)
+  const volumeCheckIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
+  // Start recording function
   const startRecording = async () => {
+    if (isRecording) return;
+    
     try {
       // Get audio stream
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
@@ -134,6 +141,11 @@ export function LiveTranscription() {
       }
       
       recognition.start()
+      
+      toast({
+        title: "Recording Started",
+        description: "Listening for your voice...",
+      })
     } catch (error) {
       toast({
         title: "Error",
@@ -143,7 +155,10 @@ export function LiveTranscription() {
     }
   }
 
+  // Stop recording function
   const stopRecording = () => {
+    if (!isRecording) return;
+    
     setIsRecording(false)
     
     // Calculate recording duration
@@ -172,6 +187,78 @@ export function LiveTranscription() {
     }
   }
 
+  // Function to check system volume
+  const checkVolume = async () => {
+    try {
+      const response = await fetch("/api/system-volume")
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`)
+      }
+      
+      const data = await response.json()
+      setVolumeLevel(data.volume)
+      setVolumeChange(data.change)
+      
+      // Handle volume changes only if enabled
+      if (volumeControlEnabled) {
+        if (data.change === "up" && !isRecording) {
+          startRecording()
+        } else if (data.change === "down" && isRecording) {
+          // Stop recording and turn off microphone when volume goes down
+          stopRecording()
+          
+          // Auto-submit the transcription if we have content and a title
+          if (transcription && title) {
+            autoSubmitTranscription()
+          }
+          
+          // Show a toast notification
+          toast({
+            title: "Recording Stopped",
+            description: "Volume down detected - recording stopped and saved",
+            variant: "default",
+          })
+        }
+      }
+    } catch (error) {
+      console.error("Error checking volume:", error)
+    }
+  }
+
+  // Start/stop volume monitoring when enabled/disabled
+  useEffect(() => {
+    if (volumeControlEnabled) {
+      // Start polling every second
+      volumeCheckIntervalRef.current = setInterval(checkVolume, 1000)
+      
+      // Also check immediately
+      checkVolume()
+      
+      toast({
+        title: "Volume Control Enabled",
+        description: "Use volume up to start and volume down to stop recording",
+      })
+    } else {
+      // Stop polling
+      if (volumeCheckIntervalRef.current) {
+        clearInterval(volumeCheckIntervalRef.current)
+        volumeCheckIntervalRef.current = null
+      }
+      
+      // If recording is active, stop it when volume control is disabled
+      if (isRecording) {
+        stopRecording()
+      }
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      if (volumeCheckIntervalRef.current) {
+        clearInterval(volumeCheckIntervalRef.current)
+      }
+    }
+  }, [volumeControlEnabled, toast, isRecording])
+
   // Cleanup on component unmount
   useEffect(() => {
     return () => {
@@ -181,9 +268,13 @@ export function LiveTranscription() {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop())
       }
+      if (volumeCheckIntervalRef.current) {
+        clearInterval(volumeCheckIntervalRef.current)
+      }
     }
   }, [])
 
+  // Generate notes from transcription
   const generateNotes = async (text: string) => {
     setIsProcessing(true)
     try {
@@ -216,6 +307,61 @@ export function LiveTranscription() {
     }
   }
   
+  // Auto-submit function for volume control
+  const autoSubmitTranscription = async () => {
+    if (!transcription || !title) {
+      return
+    }
+    
+    setIsSaving(true)
+    
+    try {
+      const response = await fetch("/api/transcriptions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          patientId: currentPatientId,
+          transcription,
+          notes,
+          duration: recordingDuration,
+        }),
+      })
+      
+      if (!response.ok) {
+        throw new Error("Failed to save transcription")
+      }
+      
+      const data = await response.json()
+      
+      toast({
+        title: "Success",
+        description: "Transcription saved automatically",
+      })
+      
+      // Clear the form
+      setTranscription("")
+      setNotes("")
+      setTitle("")
+      
+      // Force a hard refresh of the page to show the newly added transcription
+      window.location.href = "/documentation";
+      
+    } catch (error) {
+      console.error("Error auto-saving transcription:", error)
+      toast({
+        title: "Error",
+        description: "Failed to auto-save transcription",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  // Save transcription to database
   const saveTranscription = async () => {
     if (!transcription || !title) {
       toast({
@@ -287,6 +433,39 @@ export function LiveTranscription() {
         />
       </div>
       
+      {/* Volume control toggle */}
+      <div className="flex items-center justify-between mb-4 p-3 border rounded-lg bg-muted/20">
+        <div className="flex items-center space-x-2">
+          {volumeControlEnabled ? <Glasses className="h-4 w-4" /> : <Glasses className="h-4 w-4 opacity-50" />}
+          <div>
+            <p className="text-sm font-medium">Meta RayBans Hands Free</p>
+            <p className="text-xs text-muted-foreground">
+              {volumeControlEnabled 
+                ? "swipe up to start and swipe down to stop recording" 
+                : "Manual recording mode"}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-2">
+          {volumeControlEnabled && (
+            <div className="flex flex-col items-end">
+              <span className="text-xs font-mono bg-secondary px-2 py-1 rounded">
+                Volume: {volumeLevel}
+              </span>
+              {volumeChange !== "none" && (
+                <span className={`text-xs mt-1 ${volumeChange === "up" ? "text-green-500" : "text-red-500"}`}>
+                  {volumeChange === "up" ? "Volume UP" : "Volume DOWN"}
+                </span>
+              )}
+            </div>
+          )}
+          <Switch 
+            checked={volumeControlEnabled} 
+            onCheckedChange={setVolumeControlEnabled} 
+          />
+        </div>
+      </div>
+      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardContent className="p-4">
@@ -307,7 +486,7 @@ export function LiveTranscription() {
             </div>
             <ScrollArea className="h-[300px] w-full rounded-md border p-4">
               <p className="text-sm text-muted-foreground">
-                {transcription || "Click the microphone button to start recording..."}
+                {transcription || "Click the microphone button or use volume up to start recording..."}
               </p>
             </ScrollArea>
           </CardContent>

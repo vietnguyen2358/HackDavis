@@ -139,9 +139,10 @@ export function AppSidebar() {
     <>
       <SidebarHeader className="flex flex-col items-start px-4 py-4 bg-gradient-to-b from-primary/5 to-transparent">
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary shadow-lg">
+          {/* <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary shadow-lg">
             <span className="text-lg font-bold text-primary-foreground">H</span>
-          </div>
+          </div> */}
+          <Image src="/favicon.ico" alt="HealthAssist AI Logo" width={48} height={48} />
           <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">HealthAssist AI</span>
         </Link>
         {!isLandingPage && (

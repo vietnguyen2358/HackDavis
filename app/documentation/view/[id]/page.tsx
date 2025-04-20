@@ -32,11 +32,12 @@ async function getTranscriptionData(id: string) {
 }
 
 export default async function ViewTranscriptionPage({ params }: PageProps) {
-  // In Next.js 13+, params needs to be properly awaited
+  // In Next.js 13+, params is an object that must be properly awaited
+  // We need to await the params, then extract the id
   const resolvedParams = await Promise.resolve(params);
   const id = resolvedParams.id;
   
-  // Now use the id variable
+  // Use the id to fetch the transcription
   const transcription = await getTranscriptionData(id)
   
   if (!transcription) {
