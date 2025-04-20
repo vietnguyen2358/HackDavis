@@ -65,6 +65,7 @@ export function LiveTranscription() {
   const { toast } = useToast()
   const recognitionRef = useRef<SpeechRecognition | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
+  const [currentPatientId, setCurrentPatientId] = useState("P001") // Default to P001 for now
 
   const startRecording = async () => {
     try {
@@ -84,11 +85,38 @@ export function LiveTranscription() {
       recognition.interimResults = true
       recognitionRef.current = recognition
       
-      recognition.onresult = (event: SpeechRecognitionEvent) => {
+      recognition.onresult = async (event: SpeechRecognitionEvent) => {
         const transcript = Array.from(event.results)
           .map(result => result[0].transcript)
           .join("")
         setTranscription(transcript)
+
+        // If this is a final result, send it to update patient notes
+        if (event.results[event.results.length - 1].isFinal) {
+          try {
+            const response = await fetch("/api/update-patient-notes", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                patientId: currentPatientId,
+                transcription: transcript
+              }),
+            })
+
+            if (!response.ok) {
+              throw new Error("Failed to update patient notes")
+            }
+          } catch (error) {
+            console.error("Error updating patient notes:", error)
+            toast({
+              title: "Error",
+              description: "Failed to save transcription to patient notes",
+              variant: "destructive",
+            })
+          }
+        }
       }
 
       recognition.onerror = (event: SpeechRecognitionError) => {

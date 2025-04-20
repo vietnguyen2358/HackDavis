@@ -3,6 +3,28 @@
 import WebSocket from "ws";
 import twilio from 'twilio';
 
+async function saveMessage(patientId, message, speaker) {
+  try {
+    const response = await fetch('/api/save-conversation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        patientId,
+        message,
+        speaker,
+      }),
+    });
+    
+    if (!response.ok) {
+      console.error('Failed to save message:', await response.text());
+    }
+  } catch (error) {
+    console.error('Error saving message:', error);
+  }
+}
+
 export function registerOutboundRoutes(fastify) {
   // Check for required environment variables
   const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER, ELEVENLABS_AGENT_ID } = process.env;
@@ -65,7 +87,7 @@ export function registerOutboundRoutes(fastify) {
       });
 
       // Handle messages from ElevenLabs
-      elevenLabsWs.on("message", (data) => {
+      elevenLabsWs.on("message", async (data) => {
         try {
           const message = JSON.parse(data);
           handleElevenLabsMessage(message, connection);
