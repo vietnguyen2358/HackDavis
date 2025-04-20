@@ -47,7 +47,7 @@ router.get("/get-patients-appointments/:date",async(req,res)=>{
         res.json(patientsByDate)
 
     }catch(err){
-        res.status(500).json({error:"Errr with getting the patients info by date"})
+        res.status(500).json({error:"Error with getting the patients info by date"})
     }
 });
 
