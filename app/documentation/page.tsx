@@ -8,7 +8,7 @@ import { LiveTranscription } from "@/components/live-transcription"
 
 export default function DocumentationPage() {
   return (
-    <div className="flex flex-col p-6 space-y-6">
+    <div className="flex flex-col p-6 space-y-6 bg-background mobile-nav-spacing">
       <PageHeader
         title="Documentation Support"
         description="AI-powered transcription and note-taking"
@@ -32,7 +32,7 @@ export default function DocumentationPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="border-muted/50">
         <CardHeader>
           <CardTitle>Transcriptions</CardTitle>
           <CardDescription>All transcriptions sorted by date (newest first)</CardDescription>

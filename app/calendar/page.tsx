@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 
 export default function CalendarPage() {
   return (
-    <div className="flex flex-col p-4 md:p-6 space-y-6 w-full max-w-full mobile-nav-spacing">
+    <div className="flex flex-col p-4 md:p-6 space-y-6 w-full max-w-full mobile-nav-spacing bg-background">
       <PageHeader
         title="Calendar Management"
         description="AI-powered appointment scheduling and optimization"
@@ -20,7 +20,7 @@ export default function CalendarPage() {
 
       <CalendarStats />
 
-      <Card className="w-full overflow-hidden">
+      <Card className="w-full overflow-hidden border-muted/50 shadow-sm">
         <CardHeader className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
           <div>
             <CardTitle>Appointment Calendar</CardTitle>

@@ -9,11 +9,11 @@
 
   :root {
     /* Base Colors - Light Mode */
-    --background: 210 40% 98%;
+    --background: 145 40% 96%;    /* Slightly more saturated green background */
     --foreground: 215 30% 12%;    /* #18283E - Dark Navy for good contrast */
-    --card: 0 0% 100%;
+    --card: 150 20% 99%;          /* Very light mint for cards */
     --card-foreground: 215 30% 12%;
-    --popover: 0 0% 100%;
+    --popover: 150 20% 99%;
     --popover-foreground: 215 30% 12%;
     
     /* Primary Brand Color - WCAG AA Compliant */
@@ -21,11 +21,11 @@
     --primary-foreground: 0 0% 100%;
     
     /* Secondary Colors */
-    --secondary: 214 32% 91%;
+    --secondary: 150 20% 92%;     /* Light green secondary */
     --secondary-foreground: 215 30% 12%;
     
     /* Muted UI Elements */
-    --muted: 214 32% 91%;
+    --muted: 150 15% 90%;         /* Muted green */
     --muted-foreground: 215 25% 27%;
     
     /* Accent Color - Accessible Blue */
@@ -47,23 +47,23 @@
     --radius: 0.5rem;
 
     /* Sidebar variables */
-    --sidebar-background: 210 40% 98%;
+    --sidebar-background: 150 35% 95%;  /* Light mint for sidebar */
     --sidebar-foreground: 215 30% 12%;
-    --sidebar-primary: 164 80% 24%;
+    --sidebar-primary: 164 80% 24%;     /* Keep primary color consistent */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 214 32% 91%;
+    --sidebar-accent: 150 25% 90%;      /* Light green accent for sidebar */
     --sidebar-accent-foreground: 215 30% 12%;
-    --sidebar-border: 214 32% 91%;
+    --sidebar-border: 150 20% 88%;
     --sidebar-ring: 164 80% 24%;
   }
 
   .dark {
     /* Base Colors - Dark Mode */
-    --background: 217 33% 17%;   /* Darkened to ensure text contrast */
+    --background: 160 20% 15%;    /* Dark green-tinted background */
     --foreground: 210 40% 98%;
-    --card: 217 33% 17%;
+    --card: 160 18% 18%;          /* Slightly lighter dark green for cards */
     --card-foreground: 210 40% 98%;
-    --popover: 217 33% 17%;
+    --popover: 160 18% 18%;
     --popover-foreground: 210 40% 98%;
     
     /* Primary Brand Color - More visible in dark mode */
@@ -71,11 +71,11 @@
     --primary-foreground: 210 40% 98%;
     
     /* Secondary Colors */
-    --secondary: 217 33% 25%;
+    --secondary: 160 15% 22%;    /* Dark green secondary */
     --secondary-foreground: 210 40% 98%;
     
     /* Muted UI Elements */
-    --muted: 217 33% 25%;
+    --muted: 160 15% 22%;        /* Dark muted green */
     --muted-foreground: 215 20% 75%;
     
     /* Accent Color */
@@ -91,18 +91,18 @@
     --destructive-foreground: 210 40% 98%;
     
     /* UI Element Colors */
-    --border: 217 33% 25%;
-    --input: 217 33% 25%;
+    --border: 160 15% 25%;       /* Dark green border */
+    --input: 160 15% 25%;
     --ring: 164 70% 39%;
 
     /* Sidebar variables */
-    --sidebar-background: 222 47% 11%;
+    --sidebar-background: 160 25% 12%;  /* Dark green sidebar */
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 210 40% 98%;
-    --sidebar-primary-foreground: 217 33% 17%;
-    --sidebar-accent: 217 33% 25%;
+    --sidebar-primary-foreground: 160 25% 12%;
+    --sidebar-accent: 160 20% 20%;      /* Dark green accent for sidebar */
     --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 33% 25%;
+    --sidebar-border: 160 15% 25%;
     --sidebar-ring: 164 70% 39%;
   }
 }

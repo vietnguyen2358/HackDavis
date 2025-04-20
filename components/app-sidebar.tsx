@@ -143,7 +143,7 @@ export function AppSidebar() {
 
   const sidebarContent = (
     <>
-      <SidebarHeader className="flex flex-col items-start px-4 py-4 bg-gradient-to-b from-primary/5 to-transparent">
+      <SidebarHeader className="flex flex-col items-start px-4 py-4 bg-gradient-to-b from-sidebar-accent/70 to-transparent">
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           {/* <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary shadow-lg">
             <span className="text-lg font-bold text-primary-foreground">H</span>
@@ -183,15 +183,15 @@ export function AppSidebar() {
                     href={item.path} 
                     className={`flex items-center gap-3 px-4 py-3 rounded-md group relative overflow-hidden ${
                       isActive(item.path) 
-                        ? 'bg-sidebar-accent' 
-                        : 'hover:bg-sidebar-accent'
+                        ? 'bg-sidebar-accent/80 border border-muted/30' 
+                        : 'hover:bg-sidebar-accent/50 hover:border hover:border-muted/20'
                     }`}
                     onClick={() => isMobile && setOpenMobile(false)}
                   >
                     <div className={`flex items-center justify-center h-9 w-9 rounded-md transition-all duration-200 ${
                       isActive(item.path) 
-                        ? 'text-primary' 
-                        : 'text-sidebar-foreground group-hover:text-primary'
+                        ? 'text-primary bg-primary/10' 
+                        : 'text-sidebar-foreground group-hover:text-primary group-hover:bg-primary/5'
                     }`}>
                       <item.icon className="h-5 w-5" />
                     </div>
@@ -208,7 +208,7 @@ export function AppSidebar() {
 
       <SidebarSeparator className="my-2" />
 
-      <SidebarFooter className="p-4 mt-auto bg-gradient-to-t from-primary/5 to-transparent">
+      <SidebarFooter className="p-4 mt-auto bg-gradient-to-t from-sidebar-accent/70 to-transparent">
         <div className="flex flex-col gap-2">
           {loading ? (
             // Loading skeleton for user profile
@@ -220,7 +220,7 @@ export function AppSidebar() {
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-3 p-2 rounded-md hover:bg-sidebar-accent transition-colors duration-200">
+            <div className="flex items-center gap-3 p-2 rounded-md hover:bg-sidebar-accent/70 transition-colors duration-200">
               <Avatar className="h-10 w-10 border-2 border-primary/20 shadow-md">
                 <AvatarImage asChild alt="User">
                   <Image 

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 
 export default function PatientsPage() {
   return (
-    <div className="flex flex-col p-6 space-y-6">
+    <div className="flex flex-col p-6 space-y-6 bg-background mobile-nav-spacing">
       <PageHeader
         title="Patients"
         description="Manage patient records and interactions"
@@ -31,7 +31,7 @@ export default function PatientsPage() {
         <Button variant="outline">Sort</Button>
       </div>
 
-      <Card>
+      <Card className="border-muted/50 shadow-sm">
         <CardHeader>
           <CardTitle>Patient Records</CardTitle>
           <CardDescription>View and manage patient information</CardDescription>

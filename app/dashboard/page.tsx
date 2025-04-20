@@ -75,7 +75,7 @@ export default function Dashboard() {
   }, []);
   
   return (
-    <div className="flex flex-col p-4 md:p-6 lg:p-8 space-y-8 w-full max-w-full mobile-nav-spacing">
+    <div className="flex flex-col p-4 md:p-6 lg:p-8 space-y-8 w-full max-w-full mobile-nav-spacing bg-background">
       <div className="max-w-screen-2xl mx-auto w-full">
         <PageHeader 
           title="Dashboard" 
@@ -97,7 +97,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 max-w-screen-2xl mx-auto w-full">
-        <Card className="w-full shadow-sm lg:col-span-2 card-hover">
+        <Card className="w-full shadow-sm lg:col-span-2 card-hover border-muted/50">
           <CardHeader className="pb-2">
             <CardTitle className="text-xl font-semibold">Weekly Workflow Activity</CardTitle>
             <CardDescription>Task completion and time saved metrics</CardDescription>
@@ -109,7 +109,7 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card className="w-full shadow-sm card-hover">
+        <Card className="w-full shadow-sm card-hover border-muted/50">
           <CardHeader className="pb-2">
             <CardTitle className="text-xl font-semibold">AI Jobs</CardTitle>
           </CardHeader>
@@ -121,7 +121,7 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      <Card className="w-full shadow-sm max-w-screen-2xl mx-auto card-hover">
+      <Card className="w-full shadow-sm max-w-screen-2xl mx-auto card-hover border-muted/50">
         <CardHeader className="pb-2">
           <CardTitle className="text-xl font-semibold">Recent Activities</CardTitle>
           <CardDescription>Latest automated workflows and actions</CardDescription>
