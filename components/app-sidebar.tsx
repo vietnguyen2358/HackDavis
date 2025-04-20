@@ -92,9 +92,45 @@ export function AppSidebar() {
     },
   ]
 
-  // Mobile menu toggle button
+  // Toggle sidebar button
   const ToggleSidebarButton = () => {
-    if (!mounted) return null; // Prevent hydration errors
+    if (!mounted || !isLandingPage) return null; // Prevent hydration errors and only show on landing page
+    
+    // For closed sidebar - show at top left of screen
+    if (!((isMobile && openMobile) || (!isMobile && sidebarVisible))) {
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="fixed top-4 left-4 z-50 bg-background shadow-md rounded-full flex items-center justify-center" 
+              onClick={() => {
+                if (isMobile) {
+                  toggleSidebar()
+                } else {
+                  setSidebarVisible(true)
+                }
+              }}
+              aria-label="Open menu"
+            >
+              <PanelLeft className="h-5 w-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right" align="center">
+            Toggle sidebar
+          </TooltipContent>
+        </Tooltip>
+      );
+    }
+    
+    // Don't render anything here for open sidebar - it will be rendered inside sidebar
+    return null;
+  };
+
+  // Mobile menu toggle button
+  const MobileMenuButton = () => {
+    if (!mounted) return null;
 
     return (
       <Button 
@@ -215,6 +251,7 @@ export function AppSidebar() {
   return (
     <>
       <ToggleSidebarButton />
+      <MobileMenuButton />
       
       <Sidebar 
         variant="floating" 
