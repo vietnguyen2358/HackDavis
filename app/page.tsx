@@ -24,7 +24,7 @@ import { UpcomingAIJobs } from "@/components/upcoming-ai-jobs"
 // Performance mode toggle for low bandwidth users
 // Check if user has saved preference or has slow connection
 export default function LandingPage() {
-  const [isLowPerformanceMode, setIsLowPerformanceMode] = useState(false);
+  const [isLowPerformanceMode, setIsLowPerformanceMode] = useState(true);
   
   useEffect(() => {
     // Check for saved preference
@@ -40,8 +40,9 @@ export default function LandingPage() {
        connection.effectiveType === 'slow-2g' ||
        connection.downlink < 0.7); // Less than 0.7 Mbps
     
-    if (savedMode === 'true' || isSlowConnection) {
-      setIsLowPerformanceMode(true);
+    // Only change if explicitly set to false
+    if (savedMode === 'false') {
+      setIsLowPerformanceMode(false);
     }
   }, []);
 
