@@ -481,7 +481,7 @@ export default function LandingPage() {
             <div className="md:col-span-2">
               <div className="flex items-center gap-2 mb-4">
                 <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-sm overflow-hidden">
-                  <Image src="/logo.svg" alt="HealthAssist AI" width={36} height={36} />
+                  <Image src="/favicon.ico" alt="HealthAssist AI" width={48} height={48} />
                 </div>
                 <span className="text-xl font-bold font-tiempos">HealthAssist AI</span>
               </div>
