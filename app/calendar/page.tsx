@@ -5,6 +5,7 @@ import { NewUpcomingAppointmentModal } from "@/components/new-upcoming-appointme
 import Link from "next/link"
 import { CalendarStats } from "@/components/calendar-stats"
 import { UpcomingAppointments } from "@/components/UpcomingAppointments"
+import { Button } from "@/components/ui/button"
 
 export default function CalendarPage() {
   return (
