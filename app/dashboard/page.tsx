@@ -8,9 +8,9 @@ import { NewJobModal } from "@/components/new-job-modal"
 import { UpcomingAIJobs } from "@/components/upcoming-ai-jobs"
 import { WorkflowMetrics } from "@/components/workflow-metrics"
 import { CardSkeleton, Skeleton, TableRowSkeleton } from "@/components/ui/skeleton"
+import { RecentActivities } from "@/components/recent-activities"
 
 // Lazy load components that aren't needed immediately
-const RecentActivities = lazy(() => import("@/components/recent-activities").then(mod => ({ default: mod.RecentActivities })))
 const UpcomingAppointments = lazy(() => import("@/components/upcoming-appointments").then(mod => ({ default: mod.UpcomingAppointments })))
 const AutomationMetrics = lazy(() => import("@/components/automation-metrics").then(mod => ({ default: mod.AutomationMetrics })))
 
