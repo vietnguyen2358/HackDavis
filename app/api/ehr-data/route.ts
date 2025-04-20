@@ -1,29 +1,45 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
+
+// Cache for EHR data
+let ehrDataCache: any = null;
+let lastFetchTime = 0;
+const CACHE_DURATION = 60 * 1000; // 1 minute cache
 
 export async function GET() {
   try {
-    // Path to the ehr.json file
+    // Check if we have cached data that's still valid
+    const now = Date.now();
+    if (ehrDataCache && (now - lastFetchTime < CACHE_DURATION)) {
+      console.log('Returning cached EHR data');
+      return NextResponse.json(ehrDataCache);
+    }
+
+    // If no cache or cache expired, fetch fresh data
+    console.log('Fetching fresh EHR data');
     const ehrFilePath = path.join(process.cwd(), 'backend', 'api', 'data', 'ehr.json');
     
-    // Check if file exists
-    if (!fs.existsSync(ehrFilePath)) {
-      console.error('EHR file not found at:', ehrFilePath);
+    try {
+      const fileContent = await fs.readFile(ehrFilePath, 'utf8');
+      const data = JSON.parse(fileContent);
+      
+      // Update cache
+      ehrDataCache = data;
+      lastFetchTime = now;
+      
+      return NextResponse.json(data);
+    } catch (error) {
+      console.error('Error reading EHR data file:', error);
       return NextResponse.json(
-        { error: 'EHR data file not found' },
-        { status: 404 }
+        { error: 'Failed to read EHR data' },
+        { status: 500 }
       );
     }
-    
-    // Read the file
-    const ehrData = JSON.parse(fs.readFileSync(ehrFilePath, 'utf8'));
-    
-    return NextResponse.json(ehrData);
   } catch (error) {
-    console.error('Error reading EHR data:', error);
+    console.error('Unexpected error in EHR data API:', error);
     return NextResponse.json(
-      { error: 'Failed to read EHR data' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

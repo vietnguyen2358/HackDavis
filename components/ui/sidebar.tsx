@@ -645,13 +645,13 @@ SidebarMenuBadge.displayName = "SidebarMenuBadge"
 
 const SidebarMenuSkeleton = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"div"> & {
-    showIcon?: boolean
-  }
+  React.ComponentProps<"div"> & { showIcon?: boolean }
 >(({ className, showIcon = false, ...props }, ref) => {
-  // Random width between 50 to 90%.
+  // Use a deterministic approach instead of random values
+  // This ensures the same width is used on both server and client
   const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`
+    // Use a fixed value or a deterministic approach based on props
+    return "70%"
   }, [])
 
   return (

@@ -59,6 +59,16 @@
       "type": "transcription",
       "_id": "1745148104508",
       "createdAt": "2025-04-20T11:21:44.508Z"
+    },
+    {
+      "title": "mizan",
+      "patientId": "P001",
+      "transcription": "the process it right here use Google Gemini creates a critical note I guess like that I can say it's my son click save trans",
+      "notes": "CLINICAL NOTES\n  \nPatient presents with testing 1 2 3 this is a mic test yeah so my name is m i z a n and i'm a prescribed penicillin to one of my clients all right so i walked over there and then i.\n\nAssessment:\n- Patient history recorded in transcript (39 words)\n- Key points extracted from conversation\n- testing 1 2 3 this is a mic test yeah so my name is m i z a n and I'm a prescribed penicillin to one of my clients all right so I walked over there and then I\n\nPlan:\n1. Follow up in 2 weeks\n2. Medication as discussed\n3. Refer to specialist if symptoms persist\n\nThese notes were automatically generated from the transcription and should be reviewed for accuracy.",
+      "duration": "1 min",
+      "type": "transcription",
+      "_id": "1745166658473",
+      "createdAt": "2025-04-20T16:30:58.473Z"
     }
   ]
 }
