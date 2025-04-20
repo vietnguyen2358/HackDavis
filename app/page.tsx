@@ -151,7 +151,7 @@ export default function LandingPage() {
                     </Button>
                   </Link>
                   <Link href="#features" passHref>
-                    <Button size="lg" variant="outline" className="font-tiempos text-base font-medium px-8 py-6 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 shadow-lg">
+                    <Button size="lg" variant="outline" className="font-tiempos text-base font-medium px-8 py-6 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 shadow-lg cursor-pointer">
                       Learn More
                     </Button>
                   </Link>
@@ -174,7 +174,7 @@ export default function LandingPage() {
                   
                   <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
                     <Link href="#features" passHref>
-                      <Button size="lg" variant="outline" className="font-tiempos text-base font-medium px-8 py-6 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 shadow-lg">
+                      <Button size="lg" variant="outline" className="font-tiempos text-base font-medium px-8 py-6 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 shadow-lg cursor-pointer">
                         Learn More
                       </Button>
                     </Link>
@@ -258,7 +258,7 @@ export default function LandingPage() {
 
                     <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-800/20">
                       <motion.span 
-                        className="text-primary font-medium text-sm flex items-center"
+                        className="text-primary font-medium text-sm flex items-center cursor-pointer"
                         whileHover={{ x: 5 }}
                         transition={{ duration: 0.2 }}
                       >
@@ -303,7 +303,7 @@ export default function LandingPage() {
               <h2 className="font-tiempos text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
                 Trusted by Healthcare Professionals
               </h2>
-              <p className="max-w-[800px] text-muted-foreground md:text-xl/relaxed">
+              <p className="font-tiempos max-w-[800px] text-muted-foreground md:text-xl/relaxed">
                 See what medical professionals are saying about our platform.
               </p>
             </div>

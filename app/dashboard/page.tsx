@@ -6,7 +6,7 @@ import { DashboardStats } from "@/components/dashboard-stats"
 import { PageHeader } from "@/components/page-header"
 import { NewJobModal } from "@/components/new-job-modal"
 import { UpcomingAIJobs } from "@/components/upcoming-ai-jobs"
-
+import { WorkflowMetrics } from "@/components/workflow-metrics"
 // Lazy load components that aren't needed immediately
 const RecentActivities = lazy(() => import("@/components/recent-activities").then(mod => ({ default: mod.RecentActivities })))
 const UpcomingAppointments = lazy(() => import("@/components/upcoming-appointments").then(mod => ({ default: mod.UpcomingAppointments })))
@@ -30,12 +30,12 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 max-w-screen-2xl mx-auto w-full">
         <Card className="w-full shadow-sm lg:col-span-2 card-hover">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xl font-semibold">Automation Metrics</CardTitle>
-            <CardDescription>Time saved through AI automation</CardDescription>
+            <CardTitle className="text-xl font-semibold">Weekly Workflow Activity</CardTitle>
+            <CardDescription>Task completion and time saved metrics</CardDescription>
           </CardHeader>
           <CardContent>
             <Suspense fallback={<div className="h-64 flex items-center justify-center">Loading metrics...</div>}>
-              <AutomationMetrics />
+              <WorkflowMetrics />
             </Suspense>
           </CardContent>
         </Card>

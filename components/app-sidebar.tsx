@@ -6,10 +6,10 @@ import {
   FileText,
   Home,
   MessageSquare,
+  PanelLeft,
   Phone,
   Settings,
   Users,
-  Menu,
   X
 } from "lucide-react"
 import { usePathname } from "next/navigation"
@@ -37,11 +37,16 @@ export function AppSidebar() {
   const pathname = usePathname()
   const { toggleSidebar, openMobile, setOpenMobile, isMobile } = useSidebar()
   const [mounted, setMounted] = useState(false)
+  const [sidebarVisible, setSidebarVisible] = useState(false)
+  
+  const isLandingPage = pathname === "/"
 
   // Only run after component is mounted to avoid hydration mismatch
   useEffect(() => {
     setMounted(true)
-  }, [])
+    // Initialize sidebar visibility based on page
+    setSidebarVisible(!isLandingPage)
+  }, [pathname, isLandingPage])
 
   const isActive = (path: string) => {
     if (pathname === "/" && path !== "/") {
@@ -83,19 +88,25 @@ export function AppSidebar() {
     },
   ]
 
-  // Mobile menu toggle button
-  const MobileMenuButton = () => {
+  // Toggle sidebar button
+  const ToggleSidebarButton = () => {
     if (!mounted) return null; // Prevent hydration errors
 
     return (
       <Button 
         variant="ghost" 
         size="icon" 
-        className="md:hidden fixed top-4 left-4 z-50 bg-background shadow-md rounded-full" 
-        onClick={toggleSidebar}
+        className={`${isLandingPage ? 'block' : isMobile ? 'md:hidden block' : 'hidden'} fixed top-4 left-4 z-50 bg-background shadow-md rounded-full flex items-center justify-center`} 
+        onClick={() => {
+          if (isMobile) {
+            toggleSidebar()
+          } else {
+            setSidebarVisible(!sidebarVisible)
+          }
+        }}
         aria-label="Toggle menu"
       >
-        {openMobile ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        {(openMobile || (isLandingPage && sidebarVisible)) ? <X className="h-5 w-5" /> : <PanelLeft className="h-5 w-5" />}
       </Button>
     );
   };
@@ -167,12 +178,14 @@ export function AppSidebar() {
 
   return (
     <>
-      <MobileMenuButton />
+      <ToggleSidebarButton />
       
       <Sidebar 
         variant="floating" 
-        collapsible={isMobile ? "offcanvas" : "none"} 
-        className="border-r shadow-md md:block"
+        collapsible={isMobile ? "offcanvas" : isLandingPage ? (sidebarVisible ? "none" : "icon") : "none"} 
+        className={`border-r shadow-md transition-all duration-300 ${
+          isLandingPage && !sidebarVisible && !isMobile ? 'md:w-0 md:min-w-0 md:p-0 md:m-0 md:border-0 md:opacity-0' : 'md:block'
+        }`}
       >
         {/* Add hidden SheetTitle for accessibility when in mobile mode */}
         {isMobile && <SheetTitle className="sr-only">Navigation Menu</SheetTitle>}
