@@ -13,7 +13,8 @@ import {
   ChevronLeft,
   LogOut,
   X,
-  Menu
+  Menu,
+  Sparkles
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
@@ -71,8 +72,8 @@ export function AppSidebar() {
       path: "/dashboard",
     },
     {
-      title: "Documentation",
-      icon: FileText,
+      title: "AI Scribe",
+      icon: Sparkles,
       path: "/documentation",
     },
     {
