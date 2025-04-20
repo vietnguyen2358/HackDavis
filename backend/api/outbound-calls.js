@@ -232,7 +232,7 @@ export function registerOutboundRoutes(fastify) {
       console.log("[Debug] Request protocol:", request.protocol);
       
       // Get ngrok URL from environment variable or use hardcoded fallback
-      const ngrokUrl = process.env.NGROK_URL || "https://4c14-128-120-27-122.ngrok-free.app";
+      const ngrokUrl = process.env.NGROK_URL || "https://865a-128-120-27-122.ngrok-free.app";
       console.log("[Debug] Using ngrok URL:", ngrokUrl);
 
       // Create a unique session ID for this call
@@ -254,7 +254,10 @@ export function registerOutboundRoutes(fastify) {
       console.log("[Debug] Created session:", sessionId);
 
       // Use ngrok URL if available, otherwise fallback to request host
-      const baseUrl = ngrokUrl || `https://${request.headers.host}`;
+      let baseUrl = ngrokUrl || `https://${request.headers.host}`;
+      // Remove trailing slash if present to prevent double slashes
+      baseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+      
       // Use a much shorter URL with just the session ID
       const twimlUrl = `${baseUrl}/outbound-call-twiml?sessionId=${sessionId}`;
       console.log("[Debug] TwiML URL:", twimlUrl);
@@ -376,6 +379,11 @@ export function registerOutboundRoutes(fastify) {
       // Set up ElevenLabs connection
       const setupElevenLabs = async () => {
         try {
+          // Ensure we have the prompt and patient data before setting up ElevenLabs
+          if (!currentPrompt) {
+            console.log("[Debug] Warning: Setting up ElevenLabs without a prompt");
+          }
+          
           console.log("[Debug] Setting up ElevenLabs connection");
           console.log("[Debug] Using API Key:", ELEVENLABS_API_KEY ? "Present" : "Missing");
           console.log("[Debug] Using Agent ID:", ELEVENLABS_AGENT_ID);
@@ -486,9 +494,6 @@ export function registerOutboundRoutes(fastify) {
         }
       };
 
-      // Set up ElevenLabs connection
-      setupElevenLabs();
-
       // Handle messages from Twilio
       ws.on("message", (message) => {
         try {
@@ -559,6 +564,9 @@ export function registerOutboundRoutes(fastify) {
                   console.error("Error parsing system prompt:", e);
                 }
               }
+              
+              // Set up ElevenLabs connection now that we have the prompt and patient data
+              setupElevenLabs();
               break;
 
             case "media":

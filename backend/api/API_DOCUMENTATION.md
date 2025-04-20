@@ -4,7 +4,7 @@
 
 ### Endpoint
 ```
-POST https://fa91-2601-644-4300-b290-bc02-26ba-4029-e2ba.ngrok-free.app/outbound-call
+POST ${NGROK_URL}/outbound-call
 ```
 
 ### Request Body
@@ -27,7 +27,7 @@ POST https://fa91-2601-644-4300-b290-bc02-26ba-4029-e2ba.ngrok-free.app/outbound
 ### Example Request
 ```bash
 curl -X POST \
-  https://fa91-2601-644-4300-b290-bc02-26ba-4029-e2ba.ngrok-free.app/outbound-call \
+  ${NGROK_URL}/outbound-call \
   -H 'Content-Type: application/json' \
   -d '{
     "number": "+16505346538",

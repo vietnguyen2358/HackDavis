@@ -39,7 +39,7 @@ export function DashboardStats() {
   const stats = useMemo(() => [
     {
       title: "Total Patients",
-      value: "1,284",
+      value: "24",
       description: "+12% from last month",
       icon: Users,
       iconBg: "gradient-primary",
@@ -48,7 +48,7 @@ export function DashboardStats() {
     },
     {
       title: "Hours Saved",
-      value: "128",
+      value: "12",
       description: "This month through automation",
       icon: Clock,
       iconBg: "gradient-success",
@@ -57,7 +57,7 @@ export function DashboardStats() {
     },
     {
       title: "Automated Tasks",
-      value: "842",
+      value: "46",
       description: "Completed this month",
       icon: ClipboardList,
       iconBg: "gradient-primary",
@@ -66,7 +66,7 @@ export function DashboardStats() {
     },
     {
       title: "Patient Engagements",
-      value: "356",
+      value: "77%",
       description: "Automated communications",
       icon: MessageSquare,
       iconBg: "gradient-primary",
