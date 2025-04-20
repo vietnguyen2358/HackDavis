@@ -96,7 +96,11 @@ export function AppSidebar() {
       <Button 
         variant="ghost" 
         size="icon" 
-        className={`${isLandingPage ? 'block' : isMobile ? 'md:hidden block' : 'hidden'} fixed top-4 left-4 z-50 bg-background shadow-md rounded-full flex items-center justify-center`} 
+        className={`${
+          isLandingPage 
+            ? 'block' // Always show on landing page
+            : 'md:hidden block' // Only show on small screens for non-landing pages
+        } fixed top-4 left-4 z-50 bg-background shadow-md rounded-full flex items-center justify-center`} 
         onClick={() => {
           if (isMobile) {
             toggleSidebar()
