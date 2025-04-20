@@ -1,6 +1,3 @@
-# Ignore package files
-package.json
-package-lock.json
 
 # Ignore environment variables
 .env
