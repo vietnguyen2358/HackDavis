@@ -28,7 +28,13 @@ export default function LandingPage() {
       <section className="relative w-full overflow-hidden py-20 md:py-28 lg:py-36 xl:py-40">
         {/* Animated gradient background */}
         <div className="absolute inset-0 z-0">
-          <MeshGradient />
+          {/* <MeshGradient /> */}
+          <div className="w-full h-full" style={{
+    background: 
+      "radial-gradient(circle at 70% 30%, #2D7FF9 0%, transparent 30%), " +
+      "radial-gradient(circle at 30% 70%, #085240 0%, transparent 30%), " +
+      "linear-gradient(135deg, #0C6E4F 0%, #085240 100%)"
+  }}></div>
         </div>
         
         {/* Floating feature cards in background */}
