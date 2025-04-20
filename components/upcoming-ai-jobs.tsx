@@ -50,8 +50,8 @@ export function UpcomingAIJobs() {
   return (
     <div className="space-y-4">
       {jobs.map((job) => (
-        <div key={job.id} className="flex items-center justify-between p-3 rounded-lg border">
-          <div className="flex items-center gap-3">
+        <div key={job.id} className="flex flex-wrap items-center gap-3 p-3 rounded-lg border">
+          <div className="flex items-center gap-3 flex-grow">
             <div className={`p-2 rounded-full ${job.iconColor}`}>
               <job.icon className="h-4 w-4" />
             </div>
@@ -65,7 +65,7 @@ export function UpcomingAIJobs() {
               )}
             </div>
           </div>
-          <Badge variant={job.status === "In Progress" ? "default" : "outline"}>
+          <Badge variant={job.status === "In Progress" ? "default" : "outline"} className="ml-auto mt-2 sm:mt-0">
             {job.status}
           </Badge>
         </div>
