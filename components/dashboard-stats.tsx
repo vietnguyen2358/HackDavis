@@ -52,7 +52,7 @@ export function DashboardStats() {
       description: "This month through automation",
       icon: Clock,
       iconBg: "gradient-success",
-      iconColor: "text-success-foreground",
+      iconColor: "text-white",
       valueColor: "var(--success)",
     },
     {
@@ -60,7 +60,7 @@ export function DashboardStats() {
       value: "842",
       description: "Completed this month",
       icon: ClipboardList,
-      iconBg: "bg-purple-500",
+      iconBg: "gradient-primary",
       iconColor: "text-white",
       valueColor: "var(--primary)",
     },
@@ -69,9 +69,9 @@ export function DashboardStats() {
       value: "356",
       description: "Automated communications",
       icon: MessageSquare,
-      iconBg: "gradient-warning",
-      iconColor: "text-warning-foreground",
-      valueColor: "var(--warning)",
+      iconBg: "gradient-primary",
+      iconColor: "text-white",
+      valueColor: "var(--primary)",
     },
   ], []);
 
