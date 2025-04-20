@@ -10,7 +10,10 @@ import {
   Phone,
   Settings,
   Users,
-  ChevronLeft
+  ChevronLeft,
+  LogOut,
+  X,
+  Menu
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
@@ -89,60 +92,43 @@ export function AppSidebar() {
     },
   ]
 
-  // Toggle sidebar button
+  // Mobile menu toggle button
   const ToggleSidebarButton = () => {
-    if (!mounted || !isLandingPage) return null; // Prevent hydration errors and only show on landing page
-    
-    // For closed sidebar - show at top left of screen
-    if (!((isMobile && openMobile) || (!isMobile && sidebarVisible))) {
-      return (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="fixed top-4 left-4 z-50 bg-background shadow-md rounded-full flex items-center justify-center" 
-              onClick={() => {
-                if (isMobile) {
-                  toggleSidebar()
-                } else {
-                  setSidebarVisible(true)
-                }
-              }}
-              aria-label="Open menu"
-            >
-              <PanelLeft className="h-5 w-5" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="right" align="center">
-            Toggle sidebar
-          </TooltipContent>
-        </Tooltip>
-      );
-    }
-    
-    // Don't render anything here for open sidebar - it will be rendered inside sidebar
-    return null;
+    if (!mounted) return null; // Prevent hydration errors
+
+    return (
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        className="md:hidden fixed top-4 left-4 z-50 bg-background shadow-md rounded-full" 
+        onClick={toggleSidebar}
+        aria-label="Toggle menu"
+      >
+        {openMobile ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+      </Button>
+    );
   };
 
   const sidebarContent = (
     <>
       <SidebarHeader className="flex flex-col items-start px-4 py-4">
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <div className="flex h-9 w-9 items-center justify-center rounded-md gradient-primary shadow-sm">
+          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary shadow-sm">
             <span className="text-lg font-bold text-primary-foreground">H</span>
           </div>
-          <span className="font-tiempos text-xl font-bold">HealthAssist AI</span>
+          <span className="text-xl font-bold">HealthAssist AI</span>
         </Link>
         <div className="mt-6 w-full">
           <NewJobModal />
         </div>
       </SidebarHeader>
+
       <SidebarSeparator className="my-2" />
+
       <SidebarContent className="px-2">
         <SidebarMenu>
           {menuItems.map((item) => (
-            <SidebarMenuItem key={item.path} className="font-tiempos">
+            <SidebarMenuItem key={item.path}>
               <SidebarMenuButton 
                 asChild 
                 isActive={isActive(item.path)}
@@ -151,7 +137,7 @@ export function AppSidebar() {
                 <Link 
                   href={item.path} 
                   className="flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-sidebar-accent group"
-                  onClick={() => isMobile && setOpenMobile(false)} // Close menu on mobile when clicked
+                  onClick={() => isMobile && setOpenMobile(false)}
                 >
                   <div className={`flex items-center justify-center h-8 w-8 rounded-md ${isActive(item.path) ? 'bg-primary text-primary-foreground' : 'text-sidebar-foreground group-hover:text-primary'}`}>
                     <item.icon className="h-5 w-5" />
@@ -163,28 +149,38 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
+
       <SidebarSeparator className="my-2" />
-      <SidebarFooter className="p-4">
-        <div className="flex items-center gap-3 p-2 rounded-md hover:bg-sidebar-accent transition-colors duration-200">
-          <Avatar className="h-10 w-10 border-2 border-primary/10">
-            <AvatarImage asChild alt="User">
-              <Image 
-                src="/placeholder.svg" 
-                alt="User" 
-                width={40} 
-                height={40}
-                priority={false}
-              />
-            </AvatarImage>
-            <AvatarFallback className="bg-primary/10 text-primary">DR</AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col">
-            <span className="font-tiempos text-sm font-medium">Dr. Sarah Johnson</span>
-            <span className="font-tiempos text-xs text-muted-foreground">Admin</span>
+
+      <SidebarFooter className="p-4 mt-auto">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-3 p-2 rounded-md hover:bg-sidebar-accent transition-colors duration-200">
+            <Avatar className="h-10 w-10 border-2 border-primary/10">
+              <AvatarImage asChild alt="User">
+                <Image 
+                  src="/placeholder.svg" 
+                  alt="User" 
+                  width={40} 
+                  height={40}
+                  priority={false}
+                />
+              </AvatarImage>
+              <AvatarFallback className="bg-primary/10 text-primary">DR</AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col">
+              <span className="text-sm font-medium">Dr. Sarah Johnson</span>
+              <span className="text-xs text-muted-foreground">Admin</span>
+            </div>
           </div>
-          <Button variant="ghost" size="icon" className="ml-auto rounded-full hover:bg-primary/10">
-            <Settings className="h-4 w-4" />
-          </Button>
+          
+          <div className="flex items-center gap-2 px-2">
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Settings className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
         
         {/* Toggle button at bottom right of sidebar when open */}
@@ -227,9 +223,7 @@ export function AppSidebar() {
           isLandingPage && !sidebarVisible && !isMobile ? 'md:w-0 md:min-w-0 md:p-0 md:m-0 md:border-0 md:opacity-0' : 'md:block'
         }`}
       >
-        {/* Add hidden SheetTitle for accessibility when in mobile mode */}
         {isMobile && <SheetTitle className="sr-only">Navigation Menu</SheetTitle>}
-        
         {sidebarContent}
       </Sidebar>
     </>
