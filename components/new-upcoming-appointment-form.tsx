@@ -19,6 +19,8 @@ const formSchema = z.object({
   }),
   date: z.string().min(1, { message: "Date is required." }),
   time: z.string().min(1, { message: "Time is required." }),
+  doctor: z.string().min(2, { message: "Doctor is required." }),
+  reason: z.string().min(2, { message: "Reason is required." }),
   type: z.enum(["Check-up", "Follow-up", "Consultation"]),
   notes: z.string().optional(),
 })
@@ -38,6 +40,8 @@ export function NewUpcomingAppointmentForm({ onSuccess }: NewUpcomingAppointment
       patientName: "",
       date: "",
       time: "",
+      doctor: "",
+      reason: "",
       type: "Check-up",
       notes: "",
     },
@@ -106,6 +110,32 @@ export function NewUpcomingAppointmentForm({ onSuccess }: NewUpcomingAppointment
               <FormLabel>Time</FormLabel>
               <FormControl>
                 <Input type="time" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="doctor"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Doctor</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter doctor's name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="reason"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Reason</FormLabel>
+              <FormControl>
+                <Input placeholder="Reason for appointment" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

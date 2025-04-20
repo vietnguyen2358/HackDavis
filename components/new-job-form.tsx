@@ -12,7 +12,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { DialogClose } from "@/components/ui/dialog"
+import { Dialog, DialogClose, DialogTrigger } from "@/components/ui/dialog"
 
 const formSchema = z.object({
   personName: z.string().min(2, {
@@ -78,13 +78,13 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setIsSubmitting(true)
-      
+
       // Find the selected patient to get their ID
       const selectedPatient = patients.find(p => p.name === values.personName)
       if (!selectedPatient) {
         throw new Error('Selected patient not found')
       }
-      
+
       // Generate detailed notes based on job type
       let detailedNotes = values.notes || "";
       if (!detailedNotes) {
@@ -105,7 +105,7 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
             detailedNotes = `AI-assisted task for ${values.personName}.`;
         }
       }
-      
+
       // Create the job first
       const jobResponse = await fetch('/api/jobs', {
         method: 'POST',
@@ -125,7 +125,7 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
       }
 
       const job = await jobResponse.json()
-      
+
       // Format the data for the outbound call
       const jobData: {
         patientId: string;
@@ -145,7 +145,7 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
         timestamp: new Date().toISOString(),
         status: 'pending'
       }
-      
+
       // Fetch EHR data directly from the file
       let ehrData = null;
       let patientPhone = null;
@@ -154,7 +154,7 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
         if (ehrResponse.ok) {
           ehrData = await ehrResponse.json();
           console.log('Fetched EHR data:', ehrData);
-          
+
           // Find the patient in the EHR data
           const ehrPatient = ehrData.patients.find((p: any) => p.id === selectedPatient.id);
           if (ehrPatient) {
@@ -177,21 +177,21 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
       } catch (error) {
         console.error('Error fetching EHR data:', error);
       }
-      
+
       // Use the ngrok URL from environment variable
       const ngrokUrl = process.env.NEXT_PUBLIC_NGROK_URL
       if (!ngrokUrl) {
         throw new Error('Ngrok URL not configured')
       }
-      
+
       // Remove trailing slash if present to avoid double slashes
       const baseUrl = ngrokUrl.endsWith('/') ? ngrokUrl.slice(0, -1) : ngrokUrl
       const apiUrl = `${baseUrl}/outbound-call`
-      
+
       // Use our own API as a proxy to avoid CORS issues
       console.log('Making outbound call request to:', apiUrl)
       console.log('With data including patient phone:', patientPhone)
-      
+
       const response = await fetch('/api/proxy-outbound-call', {
         method: 'POST',
         headers: {
@@ -244,7 +244,7 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
               progress: 100
             }),
           })
-          
+
           // Refresh the page to show updated job status
           router.refresh()
         } catch (error) {
@@ -256,16 +256,16 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
         title: "Job created successfully",
         description: `Created a new ${values.jobType} job for ${values.personName}`,
       })
-      
+
       // Reset form and close modal
       form.reset()
       router.refresh()
-      
+
       // Call onSuccess callback if provided
       if (onSuccess) {
         onSuccess()
       }
-      
+
       // The modal will be closed by the DialogClose component
     } catch (error) {
       console.error('Error creating job:', error)
@@ -359,12 +359,14 @@ export function NewJobForm({ onSuccess }: NewJobFormProps) {
         />
 
         <div className="flex justify-end gap-4">
-          <DialogClose asChild>
-            <Button type="button" variant="outline">Cancel</Button>
-          </DialogClose>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Creating..." : "Submit Job"}
-          </Button>
+          <Dialog>
+            <DialogClose asChild>
+              <Button type="button" variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Creating..." : "Submit Job"}
+            </Button>
+          </Dialog>
         </div>
       </form>
     </Form>
