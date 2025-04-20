@@ -66,11 +66,6 @@ export function AppSidebar() {
       path: "/dashboard",
     },
     {
-      title: "Workflow Automation",
-      icon: ClipboardList,
-      path: "/workflow",
-    },
-    {
       title: "Patient Communication",
       icon: MessageSquare,
       path: "/communication",
