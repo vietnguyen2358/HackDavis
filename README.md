@@ -42,7 +42,7 @@ MedScribe is a powerful healthcare AI-Agent platform that helps medical professi
 1. Clone the repository
    ```
    git clone <repository-url>
-   cd mediscribe-ai
+   cd medscribe
    ```
 
 2. Install dependencies
