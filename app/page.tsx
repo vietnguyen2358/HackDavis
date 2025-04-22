@@ -199,7 +199,7 @@ export default function LandingPage() {
                     Transform Patient Care with AI
                   </h1>
                   <p className="font-tiempos max-w-[600px] text-white/80 md:text-xl">
-                    HealthAssist AI streamlines your clinical workflows, reducing administrative burden and giving you more time for what truly matters - your patients.
+                    MedScribe streamlines your clinical workflows, reducing administrative burden and giving you more time for what truly matters - your patients.
                   </p>
                 </div>
               ) : (
@@ -208,7 +208,7 @@ export default function LandingPage() {
                     Transform Patient Care with AI
                   </TextReveal>
                   <TextReveal delay={0.1} className="font-tiempos max-w-[600px] text-white/80 md:text-xl">
-                    HealthAssist AI streamlines your clinical workflows, reducing administrative burden and giving you more time for what truly matters - your patients.
+                    MedScribe streamlines your clinical workflows, reducing administrative burden and giving you more time for what truly matters - your patients.
                   </TextReveal>
                 </div>
               )}
@@ -473,7 +473,7 @@ export default function LandingPage() {
                   Ready to Transform Your Practice?
                 </h2>
                 <p className="font-tiempos text-muted-foreground md:text-xl mb-10 max-w-2xl">
-                  Join thousands of healthcare providers who are saving time, reducing burnout, and improving patient outcomes with HealthAssist AI.
+                  Join thousands of healthcare providers who are saving time, reducing burnout, and improving patient outcomes with MedScribe.
                 </p>
               </div>
             ) : (
@@ -482,7 +482,7 @@ export default function LandingPage() {
                   Ready to Transform Your Practice?
                 </h2>
                 <p className="font-tiempos text-muted-foreground md:text-xl mb-10 max-w-2xl">
-                  Join thousands of healthcare providers who are saving time, reducing burnout, and improving patient outcomes with HealthAssist AI.
+                  Join thousands of healthcare providers who are saving time, reducing burnout, and improving patient outcomes with MedScribe.
                 </p>
               </FadeIn>
             )}
@@ -537,9 +537,9 @@ export default function LandingPage() {
             <div className="md:col-span-2">
               <div className="flex items-center gap-2 mb-4">
                 <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-sm overflow-hidden">
-                  <Image src="/favicon.ico" alt="HealthAssist AI" width={48} height={48} />
+                  <Image src="/favicon.ico" alt="MedScribe" width={48} height={48} />
                 </div>
-                <span className="text-xl font-bold font-tiempos">HealthAssist AI</span>
+                <span className="text-xl font-bold font-tiempos">MedScribe</span>
               </div>
               <p className="text-muted-foreground mb-4 max-w-xs">
                 AI-powered healthcare solutions to streamline workflows, reduce administrative burden, and improve patient care.
@@ -584,7 +584,7 @@ export default function LandingPage() {
           <div className="border-t mt-12 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <p className="text-sm text-muted-foreground order-2 md:order-1">
-                © 2024 HealthAssist AI. All rights reserved.
+                © 2024 MedScribe. All rights reserved.
               </p>
               <div className="flex items-center gap-4 order-1 md:order-2">
                 <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -703,7 +703,7 @@ const testimonialData = [
     id: "testimonial-1",
     name: "Dr. Sarah Johnson",
     role: "Family Medicine Physician",
-    quote: "HealthAssist AI has completely transformed my practice. I'm saving over 2 hours of administrative work daily, and my patient satisfaction scores have significantly improved. The AI documentation is remarkably accurate and helps me focus on patient care.",
+    quote: "MedScribe has completely transformed my practice. I'm saving over 2 hours of administrative work daily, and my patient satisfaction scores have significantly improved. The AI documentation is remarkably accurate and helps me focus on patient care.",
   },
   {
     id: "testimonial-2",
@@ -715,7 +715,7 @@ const testimonialData = [
     id: "testimonial-3",
     name: "Lisa Taylor, RN",
     role: "Practice Manager",
-    quote: "From scheduling to follow-ups, HealthAssist AI has streamlined our entire workflow. Our staff is happier, our patients receive better care, and our practice is more efficient than ever. The ROI was evident within the first month.",
+    quote: "From scheduling to follow-ups, MedScribe has streamlined our entire workflow. Our staff is happier, our patients receive better care, and our practice is more efficient than ever. The ROI was evident within the first month.",
   },
   {
     id: "testimonial-4",

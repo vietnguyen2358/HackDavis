@@ -148,8 +148,8 @@ export function AppSidebar() {
           {/* <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary shadow-lg">
             <span className="text-lg font-bold text-primary-foreground">H</span>
           </div> */}
-          <Image src="/favicon.ico" alt="HealthAssist AI Logo" width={48} height={48} />
-          <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">HealthAssist AI</span>
+          <Image src="/favicon.ico" alt="MedScribe Logo" width={48} height={48} />
+          <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">MedScribe</span>
         </Link>
         {!isLandingPage && (
           <div className="mt-6 w-full">

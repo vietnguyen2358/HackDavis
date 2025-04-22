@@ -10,7 +10,7 @@ import { AppStateProvider } from "@/lib/context/app-state"
 import { inter, tiempos, playfair, sfPro, getFontVariables } from "@/lib/fonts"
 
 export const metadata: Metadata = {
-  title: "HealthAssist AI",
+  title: "MedScribe",
   description: "AI-powered healthcare dashboard for automating routine support workflows",
   generator: 'v0.dev',
   icons: {

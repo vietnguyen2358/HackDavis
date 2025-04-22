@@ -36,7 +36,7 @@ export function CallSimulator() {
       const stages = [
         {
           time: 1000,
-          text: "AI: Hello, this is HealthAssist AI calling on behalf of City Medical Clinic. Is this Emma Thompson?\n\nPatient: Yes, this is Emma.",
+          text: "AI: Hello, this is MedScribe calling on behalf of City Medical Clinic. Is this Emma Thompson?\n\nPatient: Yes, this is Emma.",
           stage: 1,
         },
         {
