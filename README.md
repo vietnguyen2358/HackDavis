@@ -100,17 +100,3 @@ MedScribe is a powerful healthcare AI-Agent platform that helps medical professi
 - `GET /api/appointments`: Retrieve all appointments
 - `POST /api/appointments`: Create a new appointment
 
-## Development
-
-### Scripts
-
-- `npm run dev`: Start the development server
-- `npm run build`: Build the production application
-- `npm run start`: Start the production server
-- `npm run lint`: Run ESLint for code quality
-- `npm run test`: Execute Jest tests
-
-## Performance Considerations
-
-The application includes a low-bandwidth mode for users with slower connections, which can be toggled in the UI. This mode disables resource-intensive animations and visual effects.
-
