@@ -13,13 +13,6 @@ MedScribe is a powerful healthcare AI-Agent platform that helps medical professi
 - **Calendar Integration**: Manage appointments and schedules efficiently
 - **Workflow Automation**: Streamline repetitive tasks and administrative processes
 
-## Accessibility Features
-- **WCAG Compliant Colors**: High-contrast color scheme with explicitly AA-compliant combinations for essential UI elements and text
-- **Keyboard Navigation**: Comprehensive focus management with visible indicators for all interactive elements
-- **Low Performance Mode**: Automatic detection of connection speed with simplified UI options for bandwidth-sensitive users
-- **Screen Reader Compatibility**: Semantic HTML with proper ARIA roles and hidden descriptive text for non-visual users
-- **Responsive Design**: Adaptable layouts that function well across all device sizes with mobile-specific optimizations
-
 ## Tech Stack
 
 - **Frontend**: Next.js 15, Tailwind CSS, ShadCN, Framer Motion
@@ -28,6 +21,13 @@ MedScribe is a powerful healthcare AI-Agent platform that helps medical professi
 - **AI Integration**: Google Generative AI
 
 ![Architecture Diagram](https://cdn.discordapp.com/attachments/1347445504807796766/1363530836808569032/image.png?ex=6807b00c&is=68065e8c&hm=4d696fa892b8928d518c237fe06f2ebf1eb3a9bc82ea7c05ea485761e502c0c8&)
+
+## Accessibility Features
+- **WCAG Compliant Colors**: High-contrast color scheme with explicitly AA-compliant combinations for essential UI elements and text
+- **Keyboard Navigation**: Comprehensive focus management with visible indicators for all interactive elements
+- **Low Performance Mode**: Automatic detection of connection speed with simplified UI options for bandwidth-sensitive users
+- **Screen Reader Compatibility**: Semantic HTML with proper ARIA roles and hidden descriptive text for non-visual users
+- **Responsive Design**: Adaptable layouts that function well across all device sizes with mobile-specific optimizations
 
 
 ## Getting Started
