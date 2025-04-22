@@ -13,6 +13,13 @@ MedScribe is a powerful healthcare AI-Agent platform that helps medical professi
 - **Calendar Integration**: Manage appointments and schedules efficiently
 - **Workflow Automation**: Streamline repetitive tasks and administrative processes
 
+## Accessibility Features
+- **WCAG Compliant Colors**: High-contrast color scheme with explicitly AA-compliant combinations for essential UI elements and text
+- **Keyboard Navigation**: Comprehensive focus management with visible indicators for all interactive elements
+- **Low Performance Mode**: Automatic detection of connection speed with simplified UI options for bandwidth-sensitive users
+- **Screen Reader Compatibility**: Semantic HTML with proper ARIA roles and hidden descriptive text for non-visual users
+- **Responsive Design**: Adaptable layouts that function well across all device sizes with mobile-specific optimizations
+
 ## Tech Stack
 
 - **Frontend**: Next.js 15, Tailwind CSS, ShadCN, Framer Motion
