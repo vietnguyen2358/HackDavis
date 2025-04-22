@@ -2,7 +2,7 @@
 
 ## Overview
 
-MediScribe AI is a powerful healthcare automation platform that helps medical professionals streamline their workflow, reduce administrative burden, and focus more on patient care. The application leverages AI to manage transcriptions, automate documentation, and optimize scheduling.
+MedScribe is a powerful healthcare AI-Agent platform that helps medical professionals streamline their workflow, reduce administrative burden, and focus more on patient care. The application leverages AI to manage transcriptions, automate documentation, and optimize scheduling.
 
 ## Features
 
