@@ -82,7 +82,7 @@
     "@types/react-dom": "^19",
     "critters": "^0.0.23",
     "jest": "^29.7.0",
-    "postcss": "^8",
+    "postcss": "^8.4.47",
     "tailwindcss": "^3.4.17",
     "ts-jest": "^29.3.2",
     "typescript": "^5"
