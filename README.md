@@ -20,7 +20,7 @@ MedScribe is a powerful healthcare AI-Agent platform that helps medical professi
 - **Hardware**: Meta Ray-Ban Glasses
 - **AI Integration**: Google Generative AI
 
-![Architecture Diagram](https://cdn.discordapp.com/attachments/1347445504807796766/1363530836808569032/image.png?ex=6807b00c&is=68065e8c&hm=4d696fa892b8928d518c237fe06f2ebf1eb3a9bc82ea7c05ea485761e502c0c8&)
+<img width="761" alt="Screenshot 2025-05-29 at 1 01 12 PM" src="https://github.com/user-attachments/assets/08c27c85-f92b-452c-8ff8-c922826bc803" />
 
 ## Accessibility Features
 - **WCAG Compliant Colors**: High-contrast color scheme with explicitly AA-compliant combinations for essential UI elements and text
